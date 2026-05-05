@@ -524,17 +524,17 @@ function framesToTime(ms) {
 }
 
 function decodeCarColors(carStyle) {
-  if (!carStyle) return null;
+  if (!carStyle) { console.log('decodeCarColors: no carStyle'); return null; }
   try {
     const b64 = carStyle.replace(/-/g, '+').replace(/_/g, '/');
-    const pad = b64 + '='.repeat(-b64.length % 4);
+    const pad = b64 + '='.repeat((4 - b64.length % 4) % 4);
     const bin = atob(pad);
     const bytes = Uint8Array.from(bin, c => c.charCodeAt(0));
-    // 4 header bytes, then RGBA per color: color1 at 4-7, color2 at 8-11
-    const c1 = `${bytes[4]}, ${bytes[5]}, ${bytes[6]}`;
-    const c2 = `${bytes[8]}, ${bytes[9]}, ${bytes[10]}`;
+    const c1 = `${bytes[6]}, ${bytes[5]}, ${bytes[4]}`;
+    const c2 = `${bytes[9]}, ${bytes[8]}, ${bytes[7]}`;
+    console.log('decodeCarColors:', carStyle, '-> c1:', c1, 'c2:', c2);
     return { c1, c2 };
-  } catch { return null; }
+  } catch(e) { console.log('decodeCarColors ERROR:', e); return null; }
 }
 
 
@@ -625,19 +625,17 @@ function render(data) {
     const globalRank = globalOffset + i + 1;
     const rankClass = globalRank === 1 ? 'rank rank-1' : globalRank === 2 ? 'rank rank-2' : globalRank === 3 ? 'rank rank-3' : 'rank';
     let rowStyle = 'style="cursor:pointer"';
-    let carSwatch = '';
     let rankTdStyle = 'style="text-align:center"';
-    if (globalRank <= 3) {
-      const colors = decodeCarColors(e.carStyle);
-      if (colors) {
+    const colors = decodeCarColors(e.carStyle);
+    if (colors) {
+      if (globalRank <= 3) {
         rowStyle = `style="cursor:pointer;background:linear-gradient(90deg, rgba(${colors.c1},0.55) 0%, rgba(${colors.c2},0.35) 60%, transparent 100%)"`;
-        rankTdStyle = `style="text-align:center;box-shadow:inset 3px 0 0 rgb(${colors.c1})"`;
-        carSwatch = `<span title="car colors" style="display:inline-block;width:28px;height:11px;border-radius:3px;background:linear-gradient(90deg,rgb(${colors.c1}),rgb(${colors.c2}));vertical-align:middle;margin-left:7px;margin-bottom:1px;border:1px solid rgba(255,255,255,0.12)"></span>`;
       }
+      rankTdStyle = `style="text-align:center;box-shadow:inset 3px 0 0 rgb(${colors.c1})"`;
     }
     return `<tr data-idx="${i}" ${rowStyle}>
       <td class="${rankClass}" ${rankTdStyle}>${globalRank}</td>
-      <td class="player-name" title="${e.nickname}">${e.nickname}${carSwatch}</td>
+      <td class="player-name" title="${e.nickname}">${e.nickname}</td>
       <td><span class="flag">${countryFlag(e.countryCode)}</span></td>
       <td class="time">${framesToTime(e.frames)}</td>
     </tr>`;
@@ -681,6 +679,14 @@ function openModal(entry) {
   document.getElementById('modalName').textContent = entry.nickname;
   document.getElementById('modalCountry').textContent = entry.countryCode || 'unknown';
 
+  const modal = document.querySelector('.modal');
+  const colors = decodeCarColors(entry.carStyle);
+  if (colors) {
+    modal.style.background = `linear-gradient(160deg, rgba(${colors.c1},0.35) 0%, rgba(${colors.c2},0.2) 40%, var(--surface) 70%)`;
+  } else {
+    modal.style.background = '';
+  }
+
   const bestRank = finishes.length ? Math.min(...finishes.map(f => f.rank)) : '—';
   document.getElementById('modalSummary').innerHTML = `
     <div class="modal-stat">
@@ -710,6 +716,8 @@ function openModal(entry) {
 
 function closeModal() {
   document.getElementById('modalOverlay').classList.remove('open');
+  const modal = document.querySelector('.modal');
+  modal.style.background = '';
 }
 
 document.getElementById('modalClose').addEventListener('click', closeModal);
