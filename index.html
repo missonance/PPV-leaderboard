@@ -424,7 +424,7 @@ async function loadTrack() {
     const json = await res.json();
     currentData = json.entries || [];
     totalEntries = json.total || 0;
-    status.innerHTML = `<span class="total-tag">${totalEntries.toLocaleString()} total entries</span>`;
+    status.innerHTML = `<span class="total-tag">${totalEntries.toLocaleString()} total finishes</span>`;
     render(currentData);
     renderPagination();
   } catch(err) {
