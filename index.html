@@ -141,13 +141,19 @@
     text-transform: uppercase;
     color: var(--muted);
     border-bottom: 1px solid var(--border);
+    border-right: 1px solid var(--border);
   }
+
+  th:last-child { border-right: none; }
 
   td {
     padding: 10px 14px;
     border-bottom: 1px solid var(--border);
+    border-right: 1px solid var(--border);
     vertical-align: middle;
   }
+
+  td:last-child { border-right: none; }
 
   tr:last-child td { border-bottom: none; }
 
@@ -262,7 +268,7 @@
     <div class="header-top">
       <h1>LEADERBOARD</h1>
     </div>
-    <div class="header-sub">track rankings // ppv</div>
+    <div class="header-sub">track rankings // poliest poly v</div>
   </header>
 
   <div class="controls">
@@ -329,7 +335,7 @@
         <tr>
           <th style="text-align:center">#</th>
           <th>player</th>
-          <th></th>
+          <th>country</th>
           <th>time</th>
         </tr>
       </thead>
