@@ -522,7 +522,21 @@ function framesToTime(ms) {
   return `${min}:${String(sec).padStart(2,'0')}.${String(msec).padStart(3,'0')}`;
 }
 
-function countryFlag(code) {
+function decodeCarColors(carStyle) {
+  if (!carStyle) return null;
+  try {
+    const b64 = carStyle.replace(/-/g, '+').replace(/_/g, '/');
+    const pad = b64 + '='.repeat(-b64.length % 4);
+    const bin = atob(pad);
+    const bytes = Uint8Array.from(bin, c => c.charCodeAt(0));
+    // skip 4 header bytes, then read 2 RGB triplets
+    const c1 = `${bytes[4]}, ${bytes[5]}, ${bytes[6]}`;
+    const c2 = `${bytes[7]}, ${bytes[8]}, ${bytes[9]}`;
+    return { c1, c2 };
+  } catch { return null; }
+}
+
+
   if (!code) return '';
   try {
     return String.fromCodePoint(...[...code.toUpperCase()].map(c => 127397 + c.charCodeAt(0)));
@@ -608,7 +622,18 @@ function render(data) {
   body.innerHTML = filtered.map((e, i) => {
     const globalRank = globalOffset + i + 1;
     const rankClass = globalRank === 1 ? 'rank rank-1' : globalRank === 2 ? 'rank rank-2' : globalRank === 3 ? 'rank rank-3' : 'rank';
-    return `<tr data-idx="${i}" style="cursor:pointer">
+    let rowStyle = '';
+    if (globalRank <= 3) {
+      const colors = decodeCarColors(e.carStyle);
+      if (colors) {
+        rowStyle = `style="cursor:pointer;background:linear-gradient(90deg, rgba(${colors.c1},0.18) 0%, rgba(${colors.c2},0.10) 100%)"`;
+      } else {
+        rowStyle = `style="cursor:pointer"`;
+      }
+    } else {
+      rowStyle = `style="cursor:pointer"`;
+    }
+    return `<tr data-idx="${i}" ${rowStyle}>
       <td class="${rankClass}" style="text-align:center">${globalRank}</td>
       <td class="player-name" title="${e.nickname}">${e.nickname}</td>
       <td><span class="flag">${countryFlag(e.countryCode)}</span></td>
