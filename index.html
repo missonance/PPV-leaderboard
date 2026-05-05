@@ -9,15 +9,15 @@
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   :root {
-    --bg: #0d0d0f;
-    --surface: #141416;
-    --surface2: #1c1c1f;
-    --border: #2a2a2f;
-    --border2: #3a3a40;
-    --text: #e8e8ec;
-    --muted: #666670;
-    --accent: #c8f135;
-    --accent2: #a8d020;
+    --bg: #151c38;
+    --surface: #1a2347;
+    --surface2: #212b58;
+    --border: #2d3d7a;
+    --border2: #3d4f96;
+    --text: #e8eaf6;
+    --muted: #7272c2;
+    --accent: #9d9ddf;
+    --accent2: #7272c2;
     --gold: #f5c842;
     --silver: #a0a0b0;
     --bronze: #c87a40;
@@ -158,7 +158,7 @@
 
   tbody tr:hover { background: var(--surface2); }
 
-  tbody tr:nth-child(even) { background: #111113; }
+  tbody tr:nth-child(even) { background: #182040; }
   tbody tr:nth-child(even):hover { background: var(--surface2); }
 
   .rank {
@@ -213,10 +213,41 @@
 
   @keyframes spin { to { transform: rotate(360deg); } }
 
+  .pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 1rem;
+    font-size: 0.8rem;
+  }
+
+  .page-btn {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 0.78rem;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: border-color 0.15s, background 0.15s;
+  }
+
+  .page-btn:hover:not(:disabled) { border-color: var(--border2); background: var(--surface2); }
+  .page-btn:disabled { color: var(--muted); cursor: default; }
+  .page-btn.active { border-color: var(--accent2); color: var(--accent); }
+
+  .page-info {
+    color: var(--muted);
+    font-size: 0.75rem;
+    padding: 0 4px;
+  }
+
   .total-tag {
     display: inline-block;
-    background: rgba(200, 241, 53, 0.08);
-    border: 1px solid rgba(200, 241, 53, 0.2);
+    background: rgba(114, 114, 194, 0.12);
+    border: 1px solid rgba(114, 114, 194, 0.3);
     color: var(--accent);
     font-size: 0.7rem;
     padding: 2px 8px;
@@ -231,7 +262,7 @@
     <div class="header-top">
       <h1>LEADERBOARD</h1>
     </div>
-    <div class="header-sub">poliest poly v</div>
+    <div class="header-sub">track rankings // polytrack</div>
   </header>
 
   <div class="controls">
@@ -307,12 +338,17 @@
       </tbody>
     </table>
   </div>
+
+  <div class="pagination" id="pagination"></div>
 </div>
 
 <script>
 const USER_TOKEN = "1d445c6ef242fe56d1d4af3c36d80fdf2c3e6f709bdc57b36468997241fdf4b8";
+const PAGE_SIZE = 20;
 let currentData = [];
 let searchTerm = '';
+let currentPage = 0;
+let totalEntries = 0;
 
 function framesToTime(frames) {
   const ms = frames % 1000;
@@ -339,16 +375,40 @@ function render(data) {
     body.innerHTML = '<tr class="msg-row"><td colspan="4">no results found</td></tr>';
     return;
   }
+  const globalOffset = currentPage * PAGE_SIZE;
   body.innerHTML = filtered.map((e, i) => {
-    const rankClass = i === 0 ? 'rank rank-1' : i === 1 ? 'rank rank-2' : i === 2 ? 'rank rank-3' : 'rank';
-    const medal = i === 0 ? '▲' : i === 1 ? '▲' : i === 2 ? '▲' : String(i + 1);
+    const globalRank = globalOffset + i + 1;
+    const rankClass = globalRank === 1 ? 'rank rank-1' : globalRank === 2 ? 'rank rank-2' : globalRank === 3 ? 'rank rank-3' : 'rank';
     return `<tr>
-      <td class="${rankClass}" style="text-align:center">${medal === '▲' ? `<span style="font-size:0.6rem">${i+1}</span>` : medal}</td>
+      <td class="${rankClass}" style="text-align:center">${globalRank}</td>
       <td class="player-name" title="${e.nickname}">${e.nickname}</td>
       <td><span class="flag">${countryFlag(e.countryCode)}</span></td>
       <td class="time">${framesToTime(e.frames)}</td>
     </tr>`;
   }).join('');
+}
+
+function renderPagination() {
+  const pagination = document.getElementById('pagination');
+  const totalPages = Math.ceil(totalEntries / PAGE_SIZE);
+  if (totalPages <= 1) { pagination.innerHTML = ''; return; }
+
+  const prevDisabled = currentPage === 0 ? 'disabled' : '';
+  const nextDisabled = currentPage >= totalPages - 1 ? 'disabled' : '';
+
+  pagination.innerHTML = `
+    <button class="page-btn" ${prevDisabled} onclick="goToPage(0)">«</button>
+    <button class="page-btn" ${prevDisabled} onclick="goToPage(${currentPage - 1})">‹ prev</button>
+    <span class="page-info">page ${currentPage + 1} of ${totalPages}</span>
+    <button class="page-btn" ${nextDisabled} onclick="goToPage(${currentPage + 1})">next ›</button>
+    <button class="page-btn" ${nextDisabled} onclick="goToPage(${totalPages - 1})">»</button>
+  `;
+}
+
+async function goToPage(page) {
+  currentPage = page;
+  await loadTrack();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 async function loadTrack() {
@@ -357,19 +417,25 @@ async function loadTrack() {
   const status = document.getElementById('statusBar');
   body.innerHTML = '<tr class="msg-row"><td colspan="4"><span class="spinner"></span>loading...</td></tr>';
   status.textContent = '';
+  const skip = currentPage * PAGE_SIZE;
   try {
-    const res = await fetch(`https://square-lab-fa4f.tigasdarren.workers.dev/?trackId=${trackId}&userTokenHash=${USER_TOKEN}`);
+    const res = await fetch(`https://square-lab-fa4f.tigasdarren.workers.dev/?trackId=${trackId}&skip=${skip}&userTokenHash=${USER_TOKEN}`);
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const json = await res.json();
     currentData = json.entries || [];
-    status.innerHTML = `<span class="total-tag">${(json.total || 0).toLocaleString()} total finishes</span>`;
+    totalEntries = json.total || 0;
+    status.innerHTML = `<span class="total-tag">${totalEntries.toLocaleString()} total entries</span>`;
     render(currentData);
+    renderPagination();
   } catch(err) {
     body.innerHTML = `<tr class="msg-row error"><td colspan="4">failed to load — ${err.message}</td></tr>`;
   }
 }
 
-document.getElementById('trackSelect').addEventListener('change', loadTrack);
+document.getElementById('trackSelect').addEventListener('change', () => {
+  currentPage = 0;
+  loadTrack();
+});
 document.getElementById('searchInput').addEventListener('input', e => {
   searchTerm = e.target.value.toLowerCase().trim();
   render(currentData);
