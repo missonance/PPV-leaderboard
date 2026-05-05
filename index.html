@@ -425,7 +425,7 @@ async function loadTrack() {
   status.textContent = '';
   const skip = currentPage * PAGE_SIZE;
   try {
-    const res = await fetch(`https://square-lab-fa4f.tigasdarren.workers.dev/?trackId=${trackId}&skip=${skip}&userTokenHash=${USER_TOKEN}`);
+    const res = await fetch(`https://square-lab-fa4f.missonance.workers.dev/?trackId=${trackId}&skip=${skip}&userTokenHash=${USER_TOKEN}`);
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const json = await res.json();
     currentData = json.entries || [];
