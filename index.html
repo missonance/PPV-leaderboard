@@ -163,9 +163,7 @@
   }
 
   tbody tr:hover { background: var(--surface2); }
-  tbody tr[style*="linear-gradient"] .rank { color: rgba(255,255,255,0.9) !important; }
-  tbody tr[style*="linear-gradient"] .player-name { color: #fff; }
-
+  tbody tr:hover td[style*="linear-gradient"] { filter: brightness(1.2); }
 
   tbody tr:nth-child(even) { background: #182040; }
   tbody tr:nth-child(even):hover { background: var(--surface2); }
@@ -531,9 +529,21 @@ function decodeCarColors(carStyle) {
 
 function countryFlag(code) {
   if (!code) return '';
-  try {
-    return String.fromCodePoint(...[...code.toUpperCase()].map(c => 127397 + c.charCodeAt(0)));
-  } catch { return ''; }
+  const lower = code.toLowerCase();
+  return `<img src="https://flagcdn.com/16x12/${lower}.png" srcset="https://flagcdn.com/32x24/${lower}.png 2x" width="16" height="12" alt="${code}" title="${code}" style="vertical-align:middle;border-radius:1px;display:inline-block">`;
+}
+
+function getLuminance(rgbStr) {
+  const [r, g, b] = rgbStr.split(',').map(v => {
+    const c = parseInt(v.trim()) / 255;
+    return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
+  });
+  return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+}
+
+function getContrastColor(bgRgbStr) {
+  const lum = getLuminance(bgRgbStr);
+  return lum > 0.22 ? '#1a1a2e' : 'var(--text)';
 }
 
 async function refreshAllTracks() {
@@ -619,18 +629,23 @@ function render(data) {
     let rankTdStyle = 'style="text-align:center"';
     const colors = decodeCarColors(e.carStyle);
     let timeTdStyle = '';
+    let nameTdStyle = '';
+    let flagTdStyle = '';
     if (colors) {
-      if (globalRank <= 3) {
-        rowStyle = `style="cursor:pointer;background:linear-gradient(90deg, rgb(${colors.c1}) 0%, rgb(${colors.c2}) 100%)"`;
-        rankTdStyle = `style="text-align:center;box-shadow:inset 3px 0 0 rgba(255,255,255,0.4)"`;
+      if (globalRank === 1) {
+        const nameColor = getContrastColor(colors.c1);
+        nameTdStyle = `style="font-weight:500;color:${nameColor};max-width:280px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;background:linear-gradient(90deg, rgba(${colors.c1},0.55) 0%, rgba(${colors.c2},0.35) 70%, transparent 100%)"`;
+        flagTdStyle = `style="background:linear-gradient(90deg, rgba(${colors.c2},0.2) 0%, transparent 100%)"`;
+        timeTdStyle = `style="color:#fff;font-variant-numeric:tabular-nums;font-weight:600;letter-spacing:0.02em"`;
       } else {
-        rankTdStyle = `style="text-align:center;box-shadow:inset 3px 0 0 rgb(${colors.c1})"`;
+        timeTdStyle = `style="color:#fff;font-variant-numeric:tabular-nums;font-weight:600;letter-spacing:0.02em"`;
       }
+      rankTdStyle = `style="text-align:center;box-shadow:inset 3px 0 0 rgb(${colors.c1})"`;
     }
     return `<tr data-idx="${i}" ${rowStyle}>
       <td class="${rankClass}" ${rankTdStyle}>${globalRank}</td>
-      <td class="player-name" title="${e.nickname}">${e.nickname}</td>
-      <td><span class="flag">${countryFlag(e.countryCode)}</span></td>
+      <td class="player-name" title="${e.nickname}" ${nameTdStyle}>${e.nickname}</td>
+      <td ${flagTdStyle}><span class="flag">${countryFlag(e.countryCode)}</span></td>
       <td class="time" ${timeTdStyle}>${framesToTime(e.frames)}</td>
     </tr>`;
   }).join('');
