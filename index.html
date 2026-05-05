@@ -537,6 +537,7 @@ function decodeCarColors(carStyle) {
 }
 
 
+function countryFlag(code) {
   if (!code) return '';
   try {
     return String.fromCodePoint(...[...code.toUpperCase()].map(c => 127397 + c.charCodeAt(0)));
