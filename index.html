@@ -260,6 +260,87 @@
     border-radius: 3px;
     letter-spacing: 0.06em;
   }
+
+  tbody tr { cursor: pointer; }
+
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(10, 13, 28, 0.8);
+    backdrop-filter: blur(3px);
+    z-index: 100;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .modal-overlay.open { display: flex; }
+
+  .modal {
+    background: var(--surface);
+    border: 1px solid var(--border2);
+    border-radius: 8px;
+    padding: 2rem;
+    width: 100%;
+    max-width: 360px;
+    margin: 1rem;
+    position: relative;
+  }
+
+  .modal-close {
+    position: absolute;
+    top: 12px; right: 14px;
+    background: none;
+    border: none;
+    color: var(--muted);
+    font-size: 1.2rem;
+    cursor: pointer;
+    font-family: var(--mono);
+  }
+  .modal-close:hover { color: var(--text); }
+
+  .modal-flag { font-size: 3rem; line-height: 1; margin-bottom: 0.6rem; }
+
+  .modal-name {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 0.2rem;
+    word-break: break-all;
+  }
+
+  .modal-country {
+    font-size: 0.72rem;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+  }
+
+  .modal-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    overflow: hidden;
+  }
+
+  .modal-stat { background: var(--surface2); padding: 0.75rem 1rem; }
+
+  .modal-stat-label {
+    font-size: 0.63rem;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 0.3rem;
+  }
+
+  .modal-stat-value { font-size: 1rem; font-weight: 600; color: var(--accent); }
+  .modal-stat-value.gold { color: var(--gold); }
+  .modal-stat-value.silver { color: var(--silver); }
+  .modal-stat-value.bronze { color: var(--bronze); }
 </style>
 </head>
 <body>
@@ -348,29 +429,49 @@
   <div class="pagination" id="pagination"></div>
 </div>
 
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <button class="modal-close" id="modalClose">✕</button>
+    <div class="modal-flag" id="modalFlag"></div>
+    <div class="modal-name" id="modalName"></div>
+    <div class="modal-country" id="modalCountry"></div>
+    <div class="modal-stats" id="modalSummary"></div>
+    <div style="margin-top:1rem;font-size:0.65rem;color:var(--muted);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.4rem">track finishes</div>
+    <div style="border:1px solid var(--border);border-radius:5px;overflow:hidden;max-height:280px;overflow-y:auto">
+      <table style="width:100%;border-collapse:collapse;font-family:var(--mono)">
+        <tbody id="modalFinishes"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
 <script>
-const USER_TOKEN = "1d445c6ef242fe56d1d4af3c36d80fdf2c3e6f709bdc57b36468997241fdf4b8";
+const WORKER = 'https://square-lab-fa4f.tigasdarren.workers.dev';
 const PAGE_SIZE = 20;
-let currentData = [];
+
+// all track data loaded once from KV
+let allData = null;       // { updatedAt, tracks: { [trackId]: { num, name, entries[] } } }
+let currentData = [];     // entries for the selected track (current page)
 let searchTerm = '';
 let currentPage = 0;
 let totalEntries = 0;
 
-function framesToTime(frames) {
-  const ms = frames % 1000;
-  const totalSec = Math.floor(frames / 1000);
+function framesToTime(ms) {
+  const msec = ms % 1000;
+  const totalSec = Math.floor(ms / 1000);
   const sec = totalSec % 60;
   const min = Math.floor(totalSec / 60);
-  return `${min}:${String(sec).padStart(2,'0')}.${String(ms).padStart(3,'0')}`;
+  return `${min}:${String(sec).padStart(2,'0')}.${String(msec).padStart(3,'0')}`;
 }
 
 function countryFlag(code) {
   if (!code) return '';
   try {
-    const cp = [...code.toUpperCase()].map(c => 127397 + c.charCodeAt(0));
-    return String.fromCodePoint(...cp);
+    return String.fromCodePoint(...[...code.toUpperCase()].map(c => 127397 + c.charCodeAt(0)));
   } catch { return ''; }
 }
+
+// ── leaderboard render ────────────────────────────────────────────────────────
 
 function render(data) {
   const body = document.getElementById('lbBody');
@@ -385,23 +486,28 @@ function render(data) {
   body.innerHTML = filtered.map((e, i) => {
     const globalRank = globalOffset + i + 1;
     const rankClass = globalRank === 1 ? 'rank rank-1' : globalRank === 2 ? 'rank rank-2' : globalRank === 3 ? 'rank rank-3' : 'rank';
-    return `<tr>
+    return `<tr data-idx="${i}" style="cursor:pointer">
       <td class="${rankClass}" style="text-align:center">${globalRank}</td>
       <td class="player-name" title="${e.nickname}">${e.nickname}</td>
       <td><span class="flag">${countryFlag(e.countryCode)}</span></td>
       <td class="time">${framesToTime(e.frames)}</td>
     </tr>`;
   }).join('');
+
+  body.querySelectorAll('tr[data-idx]').forEach(row => {
+    row.addEventListener('click', () => {
+      const e = filtered[parseInt(row.dataset.idx)];
+      openModal(e);
+    });
+  });
 }
 
 function renderPagination() {
   const pagination = document.getElementById('pagination');
   const totalPages = Math.ceil(totalEntries / PAGE_SIZE);
   if (totalPages <= 1) { pagination.innerHTML = ''; return; }
-
   const prevDisabled = currentPage === 0 ? 'disabled' : '';
   const nextDisabled = currentPage >= totalPages - 1 ? 'disabled' : '';
-
   pagination.innerHTML = `
     <button class="page-btn" ${prevDisabled} onclick="goToPage(0)">«</button>
     <button class="page-btn" ${prevDisabled} onclick="goToPage(${currentPage - 1})">‹ prev</button>
@@ -411,28 +517,112 @@ function renderPagination() {
   `;
 }
 
-async function goToPage(page) {
+function goToPage(page) {
   currentPage = page;
-  await loadTrack();
+  showTrack();
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-async function loadTrack() {
+// show the selected track from cached allData
+function showTrack() {
   const trackId = document.getElementById('trackSelect').value;
   const body = document.getElementById('lbBody');
   const status = document.getElementById('statusBar');
-  body.innerHTML = '<tr class="msg-row"><td colspan="4"><span class="spinner"></span>loading...</td></tr>';
-  status.textContent = '';
-  const skip = currentPage * PAGE_SIZE;
+
+  if (!allData) {
+    body.innerHTML = '<tr class="msg-row"><td colspan="4"><span class="spinner"></span>loading...</td></tr>';
+    return;
+  }
+
+  const track = allData.tracks[trackId];
+  if (!track) {
+    body.innerHTML = '<tr class="msg-row error"><td colspan="4">track not found in cache</td></tr>';
+    return;
+  }
+
+  const allEntries = track.entries || [];
+  totalEntries = allEntries.length;
+  const start = currentPage * PAGE_SIZE;
+  currentData = allEntries.slice(start, start + PAGE_SIZE);
+
+  const updated = new Date(allData.updatedAt).toLocaleTimeString();
+  status.innerHTML = `<span class="total-tag">${totalEntries.toLocaleString()} total finishes</span> <span style="color:var(--muted);font-size:0.7rem">· cached ${updated}</span>`;
+
+  render(currentData);
+  renderPagination();
+}
+
+// ── player profile modal ──────────────────────────────────────────────────────
+
+function openModal(entry) {
+  if (!allData) return;
+
+  // find every track this player appears in
+  const finishes = [];
+  for (const [trackId, track] of Object.entries(allData.tracks)) {
+    const match = track.entries.find(e => e.nickname === entry.nickname);
+    if (match) {
+      finishes.push({ num: track.num, name: track.name, rank: match.rank, frames: match.frames });
+    }
+  }
+  finishes.sort((a, b) => a.num - b.num);
+
+  const flag = countryFlag(entry.countryCode) || '🌐';
+  const country = entry.countryCode || 'unknown';
+
+  document.getElementById('modalFlag').textContent = flag;
+  document.getElementById('modalName').textContent = entry.nickname;
+  document.getElementById('modalCountry').textContent = country;
+
+  // summary stats
+  const bestRank = finishes.length ? Math.min(...finishes.map(f => f.rank)) : '—';
+  document.getElementById('modalSummary').innerHTML = `
+    <div class="modal-stat">
+      <div class="modal-stat-label">tracks finished</div>
+      <div class="modal-stat-value">${finishes.length} / 50</div>
+    </div>
+    <div class="modal-stat">
+      <div class="modal-stat-label">best rank</div>
+      <div class="modal-stat-value ${bestRank === 1 ? 'gold' : bestRank === 2 ? 'silver' : bestRank === 3 ? 'bronze' : ''}">#${bestRank}</div>
+    </div>
+  `;
+
+  // track list
+  document.getElementById('modalFinishes').innerHTML = finishes.length
+    ? finishes.map(f => {
+        const rankClass = f.rank === 1 ? 'gold' : f.rank === 2 ? 'silver' : f.rank === 3 ? 'bronze' : '';
+        return `<tr>
+          <td style="color:var(--muted);font-size:0.7rem;padding:6px 10px;border-bottom:1px solid var(--border);border-right:1px solid var(--border)">${f.num}</td>
+          <td style="padding:6px 10px;border-bottom:1px solid var(--border);border-right:1px solid var(--border);font-size:0.78rem">${f.name}</td>
+          <td style="padding:6px 10px;border-bottom:1px solid var(--border);border-right:1px solid var(--border);font-size:0.78rem" class="${rankClass}">#${f.rank}</td>
+          <td style="padding:6px 10px;border-bottom:1px solid var(--border);color:var(--accent);font-size:0.78rem">${framesToTime(f.frames)}</td>
+        </tr>`;
+      }).join('')
+    : `<tr><td colspan="4" style="padding:1rem;text-align:center;color:var(--muted)">no finishes found</td></tr>`;
+
+  document.getElementById('modalOverlay').classList.add('open');
+}
+
+function closeModal() {
+  document.getElementById('modalOverlay').classList.remove('open');
+}
+
+document.getElementById('modalClose').addEventListener('click', closeModal);
+document.getElementById('modalOverlay').addEventListener('click', e => {
+  if (e.target === e.currentTarget) closeModal();
+});
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+// ── initial data load ─────────────────────────────────────────────────────────
+
+async function loadAllData() {
+  const body = document.getElementById('lbBody');
+  body.innerHTML = '<tr class="msg-row"><td colspan="4"><span class="spinner"></span>loading cached data...</td></tr>';
   try {
-    const res = await fetch(`https://square-lab-fa4f.missonance.workers.dev/?trackId=${trackId}&skip=${skip}&userTokenHash=${USER_TOKEN}`);
+    const res = await fetch(`${WORKER}/data`);
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const json = await res.json();
-    currentData = json.entries || [];
-    totalEntries = json.total || 0;
-    status.innerHTML = `<span class="total-tag">${totalEntries.toLocaleString()} total finishes</span>`;
-    render(currentData);
-    renderPagination();
+    allData = await res.json();
+    showTrack();
   } catch(err) {
     body.innerHTML = `<tr class="msg-row error"><td colspan="4">failed to load — ${err.message}</td></tr>`;
   }
@@ -440,14 +630,14 @@ async function loadTrack() {
 
 document.getElementById('trackSelect').addEventListener('change', () => {
   currentPage = 0;
-  loadTrack();
+  showTrack();
 });
 document.getElementById('searchInput').addEventListener('input', e => {
   searchTerm = e.target.value.toLowerCase().trim();
   render(currentData);
 });
 
-loadTrack();
+loadAllData();
 </script>
 </body>
 </html>
