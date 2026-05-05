@@ -231,7 +231,7 @@
     <div class="header-top">
       <h1>LEADERBOARD</h1>
     </div>
-    <div class="header-sub">poliest poly v</div>
+    <div class="header-sub">track rankings // polytrack</div>
   </header>
 
   <div class="controls">
@@ -358,7 +358,7 @@ async function loadTrack() {
   body.innerHTML = '<tr class="msg-row"><td colspan="4"><span class="spinner"></span>loading...</td></tr>';
   status.textContent = '';
   try {
-    const res = await fetch(`https://vps.kodub.com/v6/leaderboard?version=0.6.0&trackId=${trackId}&skip=0&amount=20&onlyVerified=false&userTokenHash=${USER_TOKEN}`, { referrerPolicy: 'no-referrer' });
+    const res = await fetch(`https://square-lab-fa4f.tigasdarren.workers.dev/?trackId=${trackId}&userTokenHash=${USER_TOKEN}`);
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const json = await res.json();
     currentData = json.entries || [];
