@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Track Leaderboard</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0d0d0f;
+    --surface: #141416;
+    --surface2: #1c1c1f;
+    --border: #2a2a2f;
+    --border2: #3a3a40;
+    --text: #e8e8ec;
+    --muted: #666670;
+    --accent: #c8f135;
+    --accent2: #a8d020;
+    --gold: #f5c842;
+    --silver: #a0a0b0;
+    --bronze: #c87a40;
+    --verified: #3ecf8e;
+    --unverified: #f0a030;
+    --mono: 'IBM Plex Mono', monospace;
+    --sans: 'IBM Plex Sans', sans-serif;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--mono);
+    min-height: 100vh;
+    padding: 2rem 1rem;
+  }
+
+  .container {
+    max-width: 860px;
+    margin: 0 auto;
+  }
+
+  header {
+    margin-bottom: 2.5rem;
+  }
+
+  .header-top {
+    display: flex;
+    align-items: baseline;
+    gap: 1rem;
+    margin-bottom: 0.5rem;
+  }
+
+  h1 {
+    font-family: var(--mono);
+    font-size: 1.6rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    color: var(--accent);
+  }
+
+  .header-sub {
+    font-size: 0.75rem;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .controls {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-bottom: 1rem;
+  }
+
+  select, input[type="text"] {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 0.8rem;
+    padding: 8px 12px;
+    border-radius: 4px;
+    outline: none;
+    transition: border-color 0.15s;
+    appearance: none;
+    -webkit-appearance: none;
+  }
+
+  select {
+    flex: 1;
+    min-width: 200px;
+    max-width: 420px;
+    cursor: pointer;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23666670' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    padding-right: 32px;
+  }
+
+  select:hover, input[type="text"]:hover { border-color: var(--border2); }
+  select:focus, input[type="text"]:focus { border-color: var(--accent); }
+
+  input[type="text"] {
+    flex: 1;
+    min-width: 160px;
+    max-width: 260px;
+  }
+
+  input[type="text"]::placeholder { color: var(--muted); }
+
+  .checkbox-wrap {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 0.78rem;
+    color: var(--muted);
+    cursor: pointer;
+    user-select: none;
+    white-space: nowrap;
+  }
+
+  .checkbox-wrap input[type="checkbox"] {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 15px;
+    height: 15px;
+    border: 1px solid var(--border2);
+    border-radius: 3px;
+    background: var(--surface);
+    cursor: pointer;
+    position: relative;
+    flex-shrink: 0;
+  }
+
+  .checkbox-wrap input[type="checkbox"]:checked {
+    background: var(--accent);
+    border-color: var(--accent);
+  }
+
+  .checkbox-wrap input[type="checkbox"]:checked::after {
+    content: '';
+    position: absolute;
+    left: 3px; top: 1px;
+    width: 5px; height: 8px;
+    border: 2px solid #0d0d0f;
+    border-top: none; border-left: none;
+    transform: rotate(45deg);
+  }
+
+  .status {
+    font-size: 0.72rem;
+    color: var(--muted);
+    letter-spacing: 0.05em;
+    margin-bottom: 1rem;
+    min-height: 1.2em;
+  }
+
+  .status span { color: var(--accent); }
+
+  .table-wrap {
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.8rem;
+  }
+
+  thead { background: var(--surface2); }
+
+  th {
+    padding: 10px 14px;
+    text-align: left;
+    font-size: 0.68rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    border-bottom: 1px solid var(--border);
+  }
+
+  td {
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: middle;
+  }
+
+  tr:last-child td { border-bottom: none; }
+
+  tbody tr {
+    background: var(--surface);
+    transition: background 0.1s;
+  }
+
+  tbody tr:hover { background: var(--surface2); }
+
+  tbody tr:nth-child(even) { background: #111113; }
+  tbody tr:nth-child(even):hover { background: var(--surface2); }
+
+  .rank {
+    font-weight: 600;
+    font-size: 0.75rem;
+    width: 40px;
+    text-align: center;
+    color: var(--muted);
+  }
+
+  .rank-1 { color: var(--gold); }
+  .rank-2 { color: var(--silver); }
+  .rank-3 { color: var(--bronze); }
+
+  .player-name {
+    font-weight: 500;
+    color: var(--text);
+    max-width: 280px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .flag { font-size: 1rem; min-width: 28px; display: inline-block; }
+
+  .time {
+    font-variant-numeric: tabular-nums;
+    color: var(--accent);
+    font-weight: 500;
+    letter-spacing: 0.02em;
+  }
+
+  .badge {
+    display: inline-block;
+    font-size: 0.65rem;
+    padding: 2px 7px;
+    border-radius: 3px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+
+  .badge-verified {
+    background: rgba(62, 207, 142, 0.12);
+    color: var(--verified);
+    border: 1px solid rgba(62, 207, 142, 0.25);
+  }
+
+  .badge-unverified {
+    background: rgba(240, 160, 48, 0.1);
+    color: var(--unverified);
+    border: 1px solid rgba(240, 160, 48, 0.2);
+  }
+
+  .msg-row td {
+    text-align: center;
+    color: var(--muted);
+    padding: 2.5rem 1rem;
+    font-size: 0.8rem;
+  }
+
+  .msg-row.error td { color: #e05050; }
+
+  .spinner {
+    display: inline-block;
+    width: 12px; height: 12px;
+    border: 2px solid var(--border2);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    margin-right: 8px;
+    vertical-align: middle;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .total-tag {
+    display: inline-block;
+    background: rgba(200, 241, 53, 0.08);
+    border: 1px solid rgba(200, 241, 53, 0.2);
+    color: var(--accent);
+    font-size: 0.7rem;
+    padding: 2px 8px;
+    border-radius: 3px;
+    letter-spacing: 0.06em;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <div class="header-top">
+      <h1>LEADERBOARD</h1>
+    </div>
+    <div class="header-sub">track rankings // polytrack</div>
+  </header>
+
+  <div class="controls">
+    <select id="trackSelect">
+      <option value="7eac4fee1111152cfba4d3737410264ca0f22c7f5a2211e79f0099589b8b48c0">Track 0 (default)</option>
+      <option value="20ea0dbd62c28316ee86e20b04bb14f3acb89d036c5da16b3cb4a9b19a9232e4">Track 1</option>
+      <option value="35794467f853b175704c32193ee5f329b5fb68274168f336a5054bf6264b1558">Track 2</option>
+      <option value="736b2fa1b10b4fe208f41e9ddd1f2dd74eeb424fc15b3e612d4929649f60508a">Track 3</option>
+      <option value="82125bc5d07e32951b52ae7fa885d1ef25618bc861f9fd6334eb3500dd440e34">Track 4</option>
+      <option value="3583b7427394e5e2a641f274b8df5de6aab2de65c2286b14e312565df86ca885">Track 5</option>
+      <option value="acf0e59570c2177ec50550f856a396d9a725be6529c838eed4963de5874478d7">Track 6</option>
+      <option value="6628ac96adf10a46d25e30947b9b5685d3c2285209e0b0d40f7e9b240046c03d">Track 7</option>
+      <option value="ea89139a2174dd5126dd1bf7f052168ebab3830abcde7fa9c2a8da4b1c560e54">Track 8</option>
+      <option value="bd379d3b9000a2f71988ab15bf6947f61c392c269760a87a3555338be5d1886b">Track 9</option>
+      <option value="e8bddc248df6500693a0a3e6bc6a0b8a6402651f5c80f9f07b658be851656c56">Track 10</option>
+      <option value="16c7b10b85e60edfb77b7abeb60a41309028e16c111e2f98a45b82dda4521d80">Track 11</option>
+      <option value="9f749a095137e0e2d22f3b355e83998d41fff70a3323bde1bac369c08f4f50d9">Track 12</option>
+      <option value="d732e13555164f4bb04c131d97aca6dfb201876f4999bc4f3da4d3995ce90c76">Track 13</option>
+      <option value="5cd274a01ebb26e79257207b9dc4b96ec33b468b2322eee37341eafb227bf097">Track 14</option>
+      <option value="5188224e1d00283d6b356ce0923b372ed0152122fe7a9ae98b4782ec1c5a3df4">Track 15</option>
+      <option value="b93526c71fcb7495a93e4389a2a42d9423d2c79fc160b9f17db6a272e8b6c3ed">Track 16</option>
+      <option value="5b91db62c77e459a117c8fc70dd03a4c7475a14885e0dcbf5c97a3774222b0e2">Track 17</option>
+      <option value="de13cc263d749ced2d58d592d8aa780580656d688c6bf1fc4b8dc983a9901859">Track 18</option>
+      <option value="63beb77d3c6a890ddf75c52bb67d92903348d753ff5d728da19d05a3c72236da">Track 19</option>
+      <option value="c527bf9068717a38cdcf74518bebea99dea4ff2a8628226dab00405dd689ac25">Track 20</option>
+      <option value="ea9a772843483576928c47f3ccf5d56b5424be602f8f0bf36a2f5ff6c48cc36f">Track 21</option>
+      <option value="cc2375750a8cec6591404dadb96dfb63d9f137b5b0a4bb523c8bbf431ab7ed02">Track 22</option>
+      <option value="d17f7999a1730ff62e76673d224a49d3c8f755490039dadd110c602ad24efafe">Track 23</option>
+      <option value="16288b12a2e25524f4883fa7366d97b0f636f8c01709023d3376bd4944b6f0cc">Track 24</option>
+      <option value="20ff8de46a7eb6e9b5c4403ad138a8e9d030edd3ec77a3f02aa39258b5f0292b">Track 25</option>
+      <option value="8fb027b02209b911d1a56d862afe735bfc03c5d18721a5f295173a8fde64c267">Track 26</option>
+      <option value="96cb4398554ef8062e9c0aee738704030e73a03250c252a559dfc09718cf1603">Track 27</option>
+      <option value="43c73c0e3f307d4a7df01e3d90f9af8784f98881e5650c856e1a169daa8c2d65">Track 28</option>
+      <option value="17efc8131e4696371497fcd355915bf5091efe1314705426d44a140ce109174f">Track 29</option>
+      <option value="a982c7be5f836075f253fb4d40d0af9b7c4e05d93e349256a7f14681b2df157c">Track 30</option>
+      <option value="361935298abe8dee7d95ad5776016f0eaab16a408d705110fafa4041563e5da0">Track 31</option>
+      <option value="2b2b97180e2b3087ab5f3bcef3ff7616e328d56f13a51290fad2f06bd7f03c38">Track 32</option>
+      <option value="6ba8f6297960b668f1ce98be1ae8a8cf491a15792e6ac30c74fd9217d8a50b95">Track 33</option>
+      <option value="866bca1f1d2aedc5dbbefcda30d76e60c2019e7b3362f152336ad23156b24fc1">Track 34</option>
+      <option value="01d7d36ef021d6680b12faea78e9278f6bfcf63a55ea2c7d48a38cd2122791db">Track 35</option>
+      <option value="fcc6b8817c801eaaeea0455130e592ff5989eb97bb2aad6fb975f4d709460daf">Track 36</option>
+      <option value="360016a9ccaf42cbb5bbe90b36069e3ba615c640b451d25bf7b14a091bb15140">Track 37</option>
+      <option value="691ff65d547d079608217b19616c70cb102691956cf344b73d0267b9328e489d">Track 38</option>
+      <option value="ddd8808544dd1b719f397b51bd7374455737e0c8d2d2e77274ac407da161ec1c">Track 39</option>
+      <option value="ca2c575bca007e4f1670526538700cd1ce2df7527d90f32e9d761dd0db8027f1">Track 40</option>
+      <option value="ccdaee0539402f633b13ddf1b2100c6a56bfcbbdca6053050c283bfc7959a331">Track 41</option>
+      <option value="5dbf4bb61a4ffe14c25ba3173ccc2c548d4b5a28292b215b44d0ed4fc0f74463">Track 42</option>
+      <option value="68f600b30716f430818b7f5165c28e54c5925bfeaa9d9bf3a84f402fa766fdfd">Track 43</option>
+      <option value="90cda57f339684d20961765c16cb4ad49dcdb28db1cf474bbc691614b5396c47">Track 44</option>
+      <option value="0bad92a5eac84fcc1e01e6c1d89353aca73e12d1a598f5607f4ee3130316dcbb">Track 45</option>
+      <option value="17f82495bddf50a6610ad1874a184cd4bf635b269d1aa1df4abfcfd8b8aed847">Track 46</option>
+      <option value="ff8e2dfb0b6056b3e785ff6e383ca004352d193cdad1f5ff0cea847b65ba174d">Track 47</option>
+      <option value="caf1784817929f44c3d847582928862560d8e448f89190afe52bf832116fd7f9">Track 48</option>
+      <option value="6cb20e2a983f5518b9fa0351b798781e272e8f1b227484a24dd10d37be122374">Track 49</option>
+      <option value="0fcff40be442f4acedc9383c1ae927b4c6488683772061352045f17d00cc150c">Track 50</option>
+    </select>
+    <input type="text" id="searchInput" placeholder="Search player..." />
+    <label class="checkbox-wrap">
+      <input type="checkbox" id="verifiedOnly"> verified only
+    </label>
+  </div>
+
+  <div class="status" id="statusBar"></div>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th style="text-align:center">#</th>
+          <th>player</th>
+          <th></th>
+          <th>time</th>
+          <th>status</th>
+        </tr>
+      </thead>
+      <tbody id="lbBody">
+        <tr class="msg-row"><td colspan="5"><span class="spinner"></span>loading...</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+const USER_TOKEN = "1d445c6ef242fe56d1d4af3c36d80fdf2c3e6f709bdc57b36468997241fdf4b8";
+let currentData = [];
+let searchTerm = '';
+
+function framesToTime(frames) {
+  const totalMs = Math.round((frames / 60) * 1000);
+  const ms = totalMs % 1000;
+  const totalSec = Math.floor(totalMs / 1000);
+  const sec = totalSec % 60;
+  const min = Math.floor(totalSec / 60);
+  return `${min}:${String(sec).padStart(2,'0')}.${String(ms).padStart(3,'0')}`;
+}
+
+function countryFlag(code) {
+  if (!code) return '';
+  try {
+    const cp = [...code.toUpperCase()].map(c => 127397 + c.charCodeAt(0));
+    return String.fromCodePoint(...cp);
+  } catch { return ''; }
+}
+
+function render(data) {
+  const body = document.getElementById('lbBody');
+  const filtered = searchTerm
+    ? data.filter(e => e.nickname.toLowerCase().includes(searchTerm))
+    : data;
+  if (!filtered.length) {
+    body.innerHTML = '<tr class="msg-row"><td colspan="5">no results found</td></tr>';
+    return;
+  }
+  body.innerHTML = filtered.map((e, i) => {
+    const rankClass = i === 0 ? 'rank rank-1' : i === 1 ? 'rank rank-2' : i === 2 ? 'rank rank-3' : 'rank';
+    const medal = i === 0 ? '▲' : i === 1 ? '▲' : i === 2 ? '▲' : String(i + 1);
+    return `<tr>
+      <td class="${rankClass}" style="text-align:center">${medal === '▲' ? `<span style="font-size:0.6rem">${i+1}</span>` : medal}</td>
+      <td class="player-name" title="${e.nickname}">${e.nickname}</td>
+      <td><span class="flag">${countryFlag(e.countryCode)}</span></td>
+      <td class="time">${framesToTime(e.frames)}</td>
+      <td><span class="badge ${e.verifiedState === 1 ? 'badge-verified' : 'badge-unverified'}">${e.verifiedState === 1 ? 'verified' : 'unverified'}</span></td>
+    </tr>`;
+  }).join('');
+}
+
+async function loadTrack() {
+  const trackId = document.getElementById('trackSelect').value;
+  const verifiedOnly = document.getElementById('verifiedOnly').checked;
+  const body = document.getElementById('lbBody');
+  const status = document.getElementById('statusBar');
+  body.innerHTML = '<tr class="msg-row"><td colspan="5"><span class="spinner"></span>loading...</td></tr>';
+  status.textContent = '';
+  try {
+    const url = `https://vps.kodub.com/v6/leaderboard?version=0.6.0&trackId=${trackId}&skip=0&amount=20&onlyVerified=${verifiedOnly}&userTokenHash=${USER_TOKEN}`;
+    const res = await fetch(url);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const json = await res.json();
+    currentData = json.entries || [];
+    status.innerHTML = `<span class="total-tag">${(json.total || 0).toLocaleString()} total entries</span>`;
+    render(currentData);
+  } catch(err) {
+    body.innerHTML = `<tr class="msg-row error"><td colspan="5">failed to load — ${err.message}</td></tr>`;
+  }
+}
+
+document.getElementById('trackSelect').addEventListener('change', loadTrack);
+document.getElementById('verifiedOnly').addEventListener('change', loadTrack);
+document.getElementById('searchInput').addEventListener('input', e => {
+  searchTerm = e.target.value.toLowerCase().trim();
+  render(currentData);
+});
+
+loadTrack();
+</script>
+</body>
+</html>
