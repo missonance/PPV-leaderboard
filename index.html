@@ -163,6 +163,7 @@
   }
 
   tbody tr:hover { background: var(--surface2); }
+  tbody tr[style*="linear-gradient"]:hover { filter: brightness(1.15); background: unset !important; }
 
   tbody tr:nth-child(even) { background: #182040; }
   tbody tr:nth-child(even):hover { background: var(--surface2); }
@@ -624,10 +625,12 @@ function render(data) {
     const globalRank = globalOffset + i + 1;
     const rankClass = globalRank === 1 ? 'rank rank-1' : globalRank === 2 ? 'rank rank-2' : globalRank === 3 ? 'rank rank-3' : 'rank';
     let rowStyle = '';
+    let carSwatch = '';
     if (globalRank <= 3) {
       const colors = decodeCarColors(e.carStyle);
       if (colors) {
-        rowStyle = `style="cursor:pointer;background:linear-gradient(90deg, rgba(${colors.c1},0.18) 0%, rgba(${colors.c2},0.10) 100%)"`;
+        rowStyle = `style="cursor:pointer;background:linear-gradient(90deg, rgba(${colors.c1},0.38) 0%, rgba(${colors.c2},0.22) 60%, transparent 100%);border-left:3px solid rgba(${colors.c1},0.9)"`;
+        carSwatch = `<span title="car colors" style="display:inline-block;width:28px;height:11px;border-radius:3px;background:linear-gradient(90deg,rgb(${colors.c1}),rgb(${colors.c2}));vertical-align:middle;margin-left:7px;margin-bottom:1px;border:1px solid rgba(255,255,255,0.12);flex-shrink:0"></span>`;
       } else {
         rowStyle = `style="cursor:pointer"`;
       }
@@ -636,7 +639,7 @@ function render(data) {
     }
     return `<tr data-idx="${i}" ${rowStyle}>
       <td class="${rankClass}" style="text-align:center">${globalRank}</td>
-      <td class="player-name" title="${e.nickname}">${e.nickname}</td>
+      <td class="player-name" title="${e.nickname}" style="display:flex;align-items:center;gap:0">${e.nickname}${carSwatch}</td>
       <td><span class="flag">${countryFlag(e.countryCode)}</span></td>
       <td class="time">${framesToTime(e.frames)}</td>
     </tr>`;
