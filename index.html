@@ -351,37 +351,6 @@ function render(data) {
   }).join('');
 }
 
-async function fetchWithFallback(target) {
-  const proxies = [
-    async (t) => {
-      // path-based avoids ?url= collision with target's own query params
-      const res = await fetch(`https://corsproxy.io/${encodeURIComponent(t)}`);
-      if (!res.ok) throw new Error(`corsproxy HTTP ${res.status}`);
-      return await res.json();
-    },
-    async (t) => {
-      const res = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(t)}`);
-      if (!res.ok) throw new Error(`allorigins HTTP ${res.status}`);
-      const wrapper = await res.json();
-      return JSON.parse(wrapper.contents);
-    },
-    async (t) => {
-      const res = await fetch(`https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(t)}`);
-      if (!res.ok) throw new Error(`codetabs HTTP ${res.status}`);
-      return await res.json();
-    },
-  ];
-  let lastErr;
-  for (const proxy of proxies) {
-    try {
-      return await proxy(target);
-    } catch(e) {
-      lastErr = e;
-    }
-  }
-  throw lastErr;
-}
-
 async function loadTrack() {
   const trackId = document.getElementById('trackSelect').value;
   const body = document.getElementById('lbBody');
@@ -389,10 +358,11 @@ async function loadTrack() {
   body.innerHTML = '<tr class="msg-row"><td colspan="4"><span class="spinner"></span>loading...</td></tr>';
   status.textContent = '';
   try {
-    const target = `https://vps.kodub.com/v6/leaderboard?version=0.6.0&trackId=${trackId}&skip=0&amount=20&onlyVerified=false&userTokenHash=${USER_TOKEN}`;
-    const json = await fetchWithFallback(target);
+    const res = await fetch(`https://vps.kodub.com/v6/leaderboard?version=0.6.0&trackId=${trackId}&skip=0&amount=20&onlyVerified=false&userTokenHash=${USER_TOKEN}`);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const json = await res.json();
     currentData = json.entries || [];
-    status.innerHTML = `<span class="total-tag">${(json.total || 0).toLocaleString()} total finishes</span>`;
+    status.innerHTML = `<span class="total-tag">${(json.total || 0).toLocaleString()} total entries</span>`;
     render(currentData);
   } catch(err) {
     body.innerHTML = `<tr class="msg-row error"><td colspan="4">failed to load — ${err.message}</td></tr>`;
