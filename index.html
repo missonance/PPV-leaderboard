@@ -163,7 +163,9 @@
   }
 
   tbody tr:hover { background: var(--surface2); }
-  tbody tr[style*="linear-gradient"]:hover { filter: brightness(1.15); background: unset !important; }
+  tbody tr[style*="linear-gradient"] .rank { color: rgba(255,255,255,0.9) !important; }
+  tbody tr[style*="linear-gradient"] .player-name { color: #fff; }
+
 
   tbody tr:nth-child(even) { background: #182040; }
   tbody tr:nth-child(even):hover { background: var(--surface2); }
@@ -193,7 +195,7 @@
 
   .time {
     font-variant-numeric: tabular-nums;
-    color: var(--accent);
+    color: #fff;
     font-weight: 500;
     letter-spacing: 0.02em;
   }
@@ -293,52 +295,44 @@
     top: 12px; right: 14px;
     background: none;
     border: none;
-    color: var(--muted);
+    color: rgba(255,255,255,0.7);
     font-size: 1.2rem;
     cursor: pointer;
     font-family: var(--mono);
   }
-  .modal-close:hover { color: var(--text); }
-
-  .modal-flag { font-size: 3rem; line-height: 1; margin-bottom: 0.6rem; }
+  .modal-close:hover { color: #fff; }
 
   .modal-name {
-    font-size: 1.1rem;
+    font-size: 1.4rem;
     font-weight: 600;
-    color: var(--text);
-    margin-bottom: 0.2rem;
-    word-break: break-all;
-  }
-
-  .modal-country {
-    font-size: 0.72rem;
-    color: var(--muted);
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
+    color: #fff;
     margin-bottom: 1.5rem;
+    word-break: break-all;
+    text-shadow: 0 1px 4px rgba(0,0,0,0.4);
   }
 
   .modal-stats {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 1px;
-    background: var(--border);
-    border: 1px solid var(--border);
+    background: rgba(0,0,0,0.2);
+    border: 1px solid rgba(255,255,255,0.2);
     border-radius: 5px;
     overflow: hidden;
+    margin-bottom: 1rem;
   }
 
-  .modal-stat { background: var(--surface2); padding: 0.75rem 1rem; }
+  .modal-stat { background: rgba(0,0,0,0.35); padding: 0.75rem 1rem; }
 
   .modal-stat-label {
     font-size: 0.63rem;
-    color: var(--muted);
+    color: rgba(255,255,255,0.6);
     letter-spacing: 0.1em;
     text-transform: uppercase;
     margin-bottom: 0.3rem;
   }
 
-  .modal-stat-value { font-size: 1rem; font-weight: 600; color: var(--accent); }
+  .modal-stat-value { font-size: 1rem; font-weight: 600; color: #fff; }
   .modal-stat-value.gold { color: var(--gold); }
   .modal-stat-value.silver { color: var(--silver); }
   .modal-stat-value.bronze { color: var(--bronze); }
@@ -434,12 +428,9 @@
 <div class="modal-overlay" id="modalOverlay">
   <div class="modal">
     <button class="modal-close" id="modalClose">✕</button>
-    <div class="modal-flag" id="modalFlag"></div>
     <div class="modal-name" id="modalName"></div>
-    <div class="modal-country" id="modalCountry"></div>
     <div class="modal-stats" id="modalSummary"></div>
-    <div style="margin-top:1rem;font-size:0.65rem;color:var(--muted);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.4rem">track finishes</div>
-    <div style="border:1px solid var(--border);border-radius:5px;overflow:hidden;max-height:280px;overflow-y:auto">
+    <div id="modalFinishesWrap" style="border:1px solid var(--border);border-radius:5px;overflow:hidden;max-height:280px;overflow-y:auto">
       <table style="width:100%;border-collapse:collapse;font-family:var(--mono)">
         <tbody id="modalFinishes"></tbody>
       </table>
@@ -627,17 +618,20 @@ function render(data) {
     let rowStyle = 'style="cursor:pointer"';
     let rankTdStyle = 'style="text-align:center"';
     const colors = decodeCarColors(e.carStyle);
+    let timeTdStyle = '';
     if (colors) {
       if (globalRank <= 3) {
-        rowStyle = `style="cursor:pointer;background:linear-gradient(90deg, rgba(${colors.c1},0.55) 0%, rgba(${colors.c2},0.35) 60%, transparent 100%)"`;
+        rowStyle = `style="cursor:pointer;background:linear-gradient(90deg, rgb(${colors.c1}) 0%, rgb(${colors.c2}) 100%)"`;
+        rankTdStyle = `style="text-align:center;box-shadow:inset 3px 0 0 rgba(255,255,255,0.4)"`;
+      } else {
+        rankTdStyle = `style="text-align:center;box-shadow:inset 3px 0 0 rgb(${colors.c1})"`;
       }
-      rankTdStyle = `style="text-align:center;box-shadow:inset 3px 0 0 rgb(${colors.c1})"`;
     }
     return `<tr data-idx="${i}" ${rowStyle}>
       <td class="${rankClass}" ${rankTdStyle}>${globalRank}</td>
       <td class="player-name" title="${e.nickname}">${e.nickname}</td>
       <td><span class="flag">${countryFlag(e.countryCode)}</span></td>
-      <td class="time">${framesToTime(e.frames)}</td>
+      <td class="time" ${timeTdStyle}>${framesToTime(e.frames)}</td>
     </tr>`;
   }).join('');
 
@@ -675,16 +669,19 @@ function openModal(entry) {
   }
   finishes.sort((a, b) => a.num - b.num);
 
-  document.getElementById('modalFlag').textContent = countryFlag(entry.countryCode) || '\u{1F310}';
   document.getElementById('modalName').textContent = entry.nickname;
-  document.getElementById('modalCountry').textContent = entry.countryCode || 'unknown';
 
   const modal = document.querySelector('.modal');
   const colors = decodeCarColors(entry.carStyle);
+  const wrap = document.getElementById('modalFinishesWrap');
   if (colors) {
-    modal.style.background = `linear-gradient(160deg, rgba(${colors.c1},0.35) 0%, rgba(${colors.c2},0.2) 40%, var(--surface) 70%)`;
+    modal.style.background = `linear-gradient(135deg, rgb(${colors.c1}) 0%, rgb(${colors.c2}) 100%)`;
+    modal.style.borderColor = `rgba(255,255,255,0.2)`;
+    if (wrap) wrap.style.borderColor = `rgba(255,255,255,0.2)`;
   } else {
     modal.style.background = '';
+    modal.style.borderColor = '';
+    if (wrap) wrap.style.borderColor = '';
   }
 
   const bestRank = finishes.length ? Math.min(...finishes.map(f => f.rank)) : '—';
@@ -702,14 +699,15 @@ function openModal(entry) {
   document.getElementById('modalFinishes').innerHTML = finishes.length
     ? finishes.map(f => {
         const rc = f.rank === 1 ? 'gold' : f.rank === 2 ? 'silver' : f.rank === 3 ? 'bronze' : '';
+        const bc = colors ? `rgba(255,255,255,0.15)` : `rgba(255,255,255,0.1)`;
         return `<tr>
-          <td style="color:var(--muted);font-size:0.7rem;padding:6px 10px;border-bottom:1px solid var(--border);border-right:1px solid var(--border)">${f.num}</td>
-          <td style="padding:6px 10px;border-bottom:1px solid var(--border);border-right:1px solid var(--border);font-size:0.78rem">${f.name}</td>
-          <td style="padding:6px 10px;border-bottom:1px solid var(--border);border-right:1px solid var(--border);font-size:0.78rem" class="${rc}">#${f.rank}</td>
-          <td style="padding:6px 10px;border-bottom:1px solid var(--border);color:var(--accent);font-size:0.78rem">${framesToTime(f.frames)}</td>
+          <td style="color:rgba(255,255,255,0.5);font-size:0.7rem;padding:6px 10px;border-bottom:1px solid ${bc};border-right:1px solid ${bc}">${f.num}</td>
+          <td style="padding:6px 10px;border-bottom:1px solid ${bc};border-right:1px solid ${bc};font-size:0.78rem;color:rgba(255,255,255,0.85)">${f.name}</td>
+          <td style="padding:6px 10px;border-bottom:1px solid ${bc};border-right:1px solid ${bc};font-size:0.78rem" class="${rc}">#${f.rank}</td>
+          <td style="padding:6px 10px;border-bottom:1px solid ${bc};color:rgba(255,255,255,0.9);font-size:0.78rem;font-weight:600">${framesToTime(f.frames)}</td>
         </tr>`;
       }).join('')
-    : `<tr><td colspan="4" style="padding:1rem;text-align:center;color:var(--muted)">no finishes found</td></tr>`;
+    : `<tr><td colspan="4" style="padding:1rem;text-align:center;color:rgba(255,255,255,0.5)">no finishes found</td></tr>`;
 
   document.getElementById('modalOverlay').classList.add('open');
 }
@@ -718,6 +716,9 @@ function closeModal() {
   document.getElementById('modalOverlay').classList.remove('open');
   const modal = document.querySelector('.modal');
   modal.style.background = '';
+  modal.style.borderColor = '';
+  const wrap = document.getElementById('modalFinishesWrap');
+  if (wrap) wrap.style.borderColor = '';
 }
 
 document.getElementById('modalClose').addEventListener('click', closeModal);
