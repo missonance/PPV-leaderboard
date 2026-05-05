@@ -231,7 +231,7 @@
     <div class="header-top">
       <h1>LEADERBOARD</h1>
     </div>
-    <div class="header-sub">track rankings // polytrack</div>
+    <div class="header-sub">poliest poly v</div>
   </header>
 
   <div class="controls">
@@ -362,7 +362,7 @@ async function loadTrack() {
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const json = await res.json();
     currentData = json.entries || [];
-    status.innerHTML = `<span class="total-tag">${(json.total || 0).toLocaleString()} total entries</span>`;
+    status.innerHTML = `<span class="total-tag">${(json.total || 0).toLocaleString()} total finishes</span>`;
     render(currentData);
   } catch(err) {
     body.innerHTML = `<tr class="msg-row error"><td colspan="4">failed to load — ${err.message}</td></tr>`;
