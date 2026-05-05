@@ -429,7 +429,8 @@ async function loadTrack() {
   body.innerHTML = '<tr class="msg-row"><td colspan="5"><span class="spinner"></span>loading...</td></tr>';
   status.textContent = '';
   try {
-    const url = `https://vps.kodub.com/v6/leaderboard?version=0.6.0&trackId=${trackId}&skip=0&amount=20&onlyVerified=${verifiedOnly}&userTokenHash=${USER_TOKEN}`;
+    const target = `https://vps.kodub.com/v6/leaderboard?version=0.6.0&trackId=${trackId}&skip=0&amount=20&onlyVerified=${verifiedOnly}&userTokenHash=${USER_TOKEN}`;
+    const url = `https://corsproxy.io/?url=${encodeURIComponent(target)}`;
     const res = await fetch(url);
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const json = await res.json();
