@@ -530,9 +530,9 @@ function decodeCarColors(carStyle) {
     const pad = b64 + '='.repeat(-b64.length % 4);
     const bin = atob(pad);
     const bytes = Uint8Array.from(bin, c => c.charCodeAt(0));
-    // 4 header bytes, color1 RGB at 4-6, color2 RGB at 10-12
+    // 4 header bytes, then RGBA per color: color1 at 4-7, color2 at 8-11
     const c1 = `${bytes[4]}, ${bytes[5]}, ${bytes[6]}`;
-    const c2 = `${bytes[10]}, ${bytes[11]}, ${bytes[12]}`;
+    const c2 = `${bytes[8]}, ${bytes[9]}, ${bytes[10]}`;
     return { c1, c2 };
   } catch { return null; }
 }
