@@ -21,8 +21,6 @@
     --gold: #f5c842;
     --silver: #a0a0b0;
     --bronze: #c87a40;
-    --verified: #3ecf8e;
-    --unverified: #f0a030;
     --mono: 'IBM Plex Mono', monospace;
     --sans: 'IBM Plex Sans', sans-serif;
   }
@@ -110,45 +108,6 @@
 
   input[type="text"]::placeholder { color: var(--muted); }
 
-  .checkbox-wrap {
-    display: flex;
-    align-items: center;
-    gap: 7px;
-    font-size: 0.78rem;
-    color: var(--muted);
-    cursor: pointer;
-    user-select: none;
-    white-space: nowrap;
-  }
-
-  .checkbox-wrap input[type="checkbox"] {
-    appearance: none;
-    -webkit-appearance: none;
-    width: 15px;
-    height: 15px;
-    border: 1px solid var(--border2);
-    border-radius: 3px;
-    background: var(--surface);
-    cursor: pointer;
-    position: relative;
-    flex-shrink: 0;
-  }
-
-  .checkbox-wrap input[type="checkbox"]:checked {
-    background: var(--accent);
-    border-color: var(--accent);
-  }
-
-  .checkbox-wrap input[type="checkbox"]:checked::after {
-    content: '';
-    position: absolute;
-    left: 3px; top: 1px;
-    width: 5px; height: 8px;
-    border: 2px solid #0d0d0f;
-    border-top: none; border-left: none;
-    transform: rotate(45deg);
-  }
-
   .status {
     font-size: 0.72rem;
     color: var(--muted);
@@ -232,28 +191,6 @@
     letter-spacing: 0.02em;
   }
 
-  .badge {
-    display: inline-block;
-    font-size: 0.65rem;
-    padding: 2px 7px;
-    border-radius: 3px;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    font-weight: 500;
-  }
-
-  .badge-verified {
-    background: rgba(62, 207, 142, 0.12);
-    color: var(--verified);
-    border: 1px solid rgba(62, 207, 142, 0.25);
-  }
-
-  .badge-unverified {
-    background: rgba(240, 160, 48, 0.1);
-    color: var(--unverified);
-    border: 1px solid rgba(240, 160, 48, 0.2);
-  }
-
   .msg-row td {
     text-align: center;
     color: var(--muted);
@@ -299,62 +236,58 @@
 
   <div class="controls">
     <select id="trackSelect">
-      <option value="7eac4fee1111152cfba4d3737410264ca0f22c7f5a2211e79f0099589b8b48c0">Track 0 (default)</option>
-      <option value="20ea0dbd62c28316ee86e20b04bb14f3acb89d036c5da16b3cb4a9b19a9232e4">Track 1</option>
-      <option value="35794467f853b175704c32193ee5f329b5fb68274168f336a5054bf6264b1558">Track 2</option>
-      <option value="736b2fa1b10b4fe208f41e9ddd1f2dd74eeb424fc15b3e612d4929649f60508a">Track 3</option>
-      <option value="82125bc5d07e32951b52ae7fa885d1ef25618bc861f9fd6334eb3500dd440e34">Track 4</option>
-      <option value="3583b7427394e5e2a641f274b8df5de6aab2de65c2286b14e312565df86ca885">Track 5</option>
-      <option value="acf0e59570c2177ec50550f856a396d9a725be6529c838eed4963de5874478d7">Track 6</option>
-      <option value="6628ac96adf10a46d25e30947b9b5685d3c2285209e0b0d40f7e9b240046c03d">Track 7</option>
-      <option value="ea89139a2174dd5126dd1bf7f052168ebab3830abcde7fa9c2a8da4b1c560e54">Track 8</option>
-      <option value="bd379d3b9000a2f71988ab15bf6947f61c392c269760a87a3555338be5d1886b">Track 9</option>
-      <option value="e8bddc248df6500693a0a3e6bc6a0b8a6402651f5c80f9f07b658be851656c56">Track 10</option>
-      <option value="16c7b10b85e60edfb77b7abeb60a41309028e16c111e2f98a45b82dda4521d80">Track 11</option>
-      <option value="9f749a095137e0e2d22f3b355e83998d41fff70a3323bde1bac369c08f4f50d9">Track 12</option>
-      <option value="d732e13555164f4bb04c131d97aca6dfb201876f4999bc4f3da4d3995ce90c76">Track 13</option>
-      <option value="5cd274a01ebb26e79257207b9dc4b96ec33b468b2322eee37341eafb227bf097">Track 14</option>
-      <option value="5188224e1d00283d6b356ce0923b372ed0152122fe7a9ae98b4782ec1c5a3df4">Track 15</option>
-      <option value="b93526c71fcb7495a93e4389a2a42d9423d2c79fc160b9f17db6a272e8b6c3ed">Track 16</option>
-      <option value="5b91db62c77e459a117c8fc70dd03a4c7475a14885e0dcbf5c97a3774222b0e2">Track 17</option>
-      <option value="de13cc263d749ced2d58d592d8aa780580656d688c6bf1fc4b8dc983a9901859">Track 18</option>
-      <option value="63beb77d3c6a890ddf75c52bb67d92903348d753ff5d728da19d05a3c72236da">Track 19</option>
-      <option value="c527bf9068717a38cdcf74518bebea99dea4ff2a8628226dab00405dd689ac25">Track 20</option>
-      <option value="ea9a772843483576928c47f3ccf5d56b5424be602f8f0bf36a2f5ff6c48cc36f">Track 21</option>
-      <option value="cc2375750a8cec6591404dadb96dfb63d9f137b5b0a4bb523c8bbf431ab7ed02">Track 22</option>
-      <option value="d17f7999a1730ff62e76673d224a49d3c8f755490039dadd110c602ad24efafe">Track 23</option>
-      <option value="16288b12a2e25524f4883fa7366d97b0f636f8c01709023d3376bd4944b6f0cc">Track 24</option>
-      <option value="20ff8de46a7eb6e9b5c4403ad138a8e9d030edd3ec77a3f02aa39258b5f0292b">Track 25</option>
-      <option value="8fb027b02209b911d1a56d862afe735bfc03c5d18721a5f295173a8fde64c267">Track 26</option>
-      <option value="96cb4398554ef8062e9c0aee738704030e73a03250c252a559dfc09718cf1603">Track 27</option>
-      <option value="43c73c0e3f307d4a7df01e3d90f9af8784f98881e5650c856e1a169daa8c2d65">Track 28</option>
-      <option value="17efc8131e4696371497fcd355915bf5091efe1314705426d44a140ce109174f">Track 29</option>
-      <option value="a982c7be5f836075f253fb4d40d0af9b7c4e05d93e349256a7f14681b2df157c">Track 30</option>
-      <option value="361935298abe8dee7d95ad5776016f0eaab16a408d705110fafa4041563e5da0">Track 31</option>
-      <option value="2b2b97180e2b3087ab5f3bcef3ff7616e328d56f13a51290fad2f06bd7f03c38">Track 32</option>
-      <option value="6ba8f6297960b668f1ce98be1ae8a8cf491a15792e6ac30c74fd9217d8a50b95">Track 33</option>
-      <option value="866bca1f1d2aedc5dbbefcda30d76e60c2019e7b3362f152336ad23156b24fc1">Track 34</option>
-      <option value="01d7d36ef021d6680b12faea78e9278f6bfcf63a55ea2c7d48a38cd2122791db">Track 35</option>
-      <option value="fcc6b8817c801eaaeea0455130e592ff5989eb97bb2aad6fb975f4d709460daf">Track 36</option>
-      <option value="360016a9ccaf42cbb5bbe90b36069e3ba615c640b451d25bf7b14a091bb15140">Track 37</option>
-      <option value="691ff65d547d079608217b19616c70cb102691956cf344b73d0267b9328e489d">Track 38</option>
-      <option value="ddd8808544dd1b719f397b51bd7374455737e0c8d2d2e77274ac407da161ec1c">Track 39</option>
-      <option value="ca2c575bca007e4f1670526538700cd1ce2df7527d90f32e9d761dd0db8027f1">Track 40</option>
-      <option value="ccdaee0539402f633b13ddf1b2100c6a56bfcbbdca6053050c283bfc7959a331">Track 41</option>
-      <option value="5dbf4bb61a4ffe14c25ba3173ccc2c548d4b5a28292b215b44d0ed4fc0f74463">Track 42</option>
-      <option value="68f600b30716f430818b7f5165c28e54c5925bfeaa9d9bf3a84f402fa766fdfd">Track 43</option>
-      <option value="90cda57f339684d20961765c16cb4ad49dcdb28db1cf474bbc691614b5396c47">Track 44</option>
-      <option value="0bad92a5eac84fcc1e01e6c1d89353aca73e12d1a598f5607f4ee3130316dcbb">Track 45</option>
-      <option value="17f82495bddf50a6610ad1874a184cd4bf635b269d1aa1df4abfcfd8b8aed847">Track 46</option>
-      <option value="ff8e2dfb0b6056b3e785ff6e383ca004352d193cdad1f5ff0cea847b65ba174d">Track 47</option>
-      <option value="caf1784817929f44c3d847582928862560d8e448f89190afe52bf832116fd7f9">Track 48</option>
-      <option value="6cb20e2a983f5518b9fa0351b798781e272e8f1b227484a24dd10d37be122374">Track 49</option>
-      <option value="0fcff40be442f4acedc9383c1ae927b4c6488683772061352045f17d00cc150c">Track 50</option>
+      <option value="20ea0dbd62c28316ee86e20b04bb14f3acb89d036c5da16b3cb4a9b19a9232e4">1 — OMPHALOSKEPSIS X</option>
+      <option value="35794467f853b175704c32193ee5f329b5fb68274168f336a5054bf6264b1558">2 — hole in one</option>
+      <option value="736b2fa1b10b4fe208f41e9ddd1f2dd74eeb424fc15b3e612d4929649f60508a">3 — Vitriol &amp; Spite</option>
+      <option value="82125bc5d07e32951b52ae7fa885d1ef25618bc861f9fd6334eb3500dd440e34">4 — Acrobatics 2</option>
+      <option value="3583b7427394e5e2a641f274b8df5de6aab2de65c2286b14e312565df86ca885">5 — Phytoforce</option>
+      <option value="acf0e59570c2177ec50550f856a396d9a725be6529c838eed4963de5874478d7">6 — Ojel</option>
+      <option value="6628ac96adf10a46d25e30947b9b5685d3c2285209e0b0d40f7e9b240046c03d">7 — 3:00 AM</option>
+      <option value="ea89139a2174dd5126dd1bf7f052168ebab3830abcde7fa9c2a8da4b1c560e54">8 — Flipping City</option>
+      <option value="bd379d3b9000a2f71988ab15bf6947f61c392c269760a87a3555338be5d1886b">9 — Around the Rosy</option>
+      <option value="e8bddc248df6500693a0a3e6bc6a0b8a6402651f5c80f9f07b658be851656c56">10 — Flight 77</option>
+      <option value="16c7b10b85e60edfb77b7abeb60a41309028e16c111e2f98a45b82dda4521d80">11 — Upper Edge</option>
+      <option value="9f749a095137e0e2d22f3b355e83998d41fff70a3323bde1bac369c08f4f50d9">12 — IKEA 2</option>
+      <option value="d732e13555164f4bb04c131d97aca6dfb201876f4999bc4f3da4d3995ce90c76">13 — Final Abstraction</option>
+      <option value="5cd274a01ebb26e79257207b9dc4b96ec33b468b2322eee37341eafb227bf097">14 — FFF</option>
+      <option value="5188224e1d00283d6b356ce0923b372ed0152122fe7a9ae98b4782ec1c5a3df4">15 — Rail Jail</option>
+      <option value="b93526c71fcb7495a93e4389a2a42d9423d2c79fc160b9f17db6a272e8b6c3ed">16 — Panicalpainity 4</option>
+      <option value="5b91db62c77e459a117c8fc70dd03a4c7475a14885e0dcbf5c97a3774222b0e2">17 — Gauge Gravity</option>
+      <option value="de13cc263d749ced2d58d592d8aa780580656d688c6bf1fc4b8dc983a9901859">18 — Kacky Chaos</option>
+      <option value="63beb77d3c6a890ddf75c52bb67d92903348d753ff5d728da19d05a3c72236da">19 — Kacky Drop</option>
+      <option value="c527bf9068717a38cdcf74518bebea99dea4ff2a8628226dab00405dd689ac25">20 — Cardinal Sin</option>
+      <option value="ea9a772843483576928c47f3ccf5d56b5424be602f8f0bf36a2f5ff6c48cc36f">21 — The Petrova Line</option>
+      <option value="cc2375750a8cec6591404dadb96dfb63d9f137b5b0a4bb523c8bbf431ab7ed02">22 — IKEA</option>
+      <option value="d17f7999a1730ff62e76673d224a49d3c8f755490039dadd110c602ad24efafe">23 — we love airtime!!!!</option>
+      <option value="16288b12a2e25524f4883fa7366d97b0f636f8c01709023d3376bd4944b6f0cc">24 — Rail Bounce</option>
+      <option value="20ff8de46a7eb6e9b5c4403ad138a8e9d030edd3ec77a3f02aa39258b5f0292b">25 — Drunk Driving</option>
+      <option value="8fb027b02209b911d1a56d862afe735bfc03c5d18721a5f295173a8fde64c267">26 — Flying Gardens</option>
+      <option value="96cb4398554ef8062e9c0aee738704030e73a03250c252a559dfc09718cf1603">27 — fellowpurper = stupid 2</option>
+      <option value="43c73c0e3f307d4a7df01e3d90f9af8784f98881e5650c856e1a169daa8c2d65">28 — Okayckeyeeeman</option>
+      <option value="17efc8131e4696371497fcd355915bf5091efe1314705426d44a140ce109174f">29 — Flight 11</option>
+      <option value="a982c7be5f836075f253fb4d40d0af9b7c4e05d93e349256a7f14681b2df157c">30 — Nosebug</option>
+      <option value="361935298abe8dee7d95ad5776016f0eaab16a408d705110fafa4041563e5da0">31 — Roof Hopping</option>
+      <option value="2b2b97180e2b3087ab5f3bcef3ff7616e328d56f13a51290fad2f06bd7f03c38">32 — Christmas Spirit</option>
+      <option value="6ba8f6297960b668f1ce98be1ae8a8cf491a15792e6ac30c74fd9217d8a50b95">33 — Icewall</option>
+      <option value="866bca1f1d2aedc5dbbefcda30d76e60c2019e7b3362f152336ad23156b24fc1">34 — Friendship</option>
+      <option value="01d7d36ef021d6680b12faea78e9278f6bfcf63a55ea2c7d48a38cd2122791db">35 — Obo....</option>
+      <option value="fcc6b8817c801eaaeea0455130e592ff5989eb97bb2aad6fb975f4d709460daf">36 — Glacier Glide</option>
+      <option value="360016a9ccaf42cbb5bbe90b36069e3ba615c640b451d25bf7b14a091bb15140">37 — Eluded Sands</option>
+      <option value="691ff65d547d079608217b19616c70cb102691956cf344b73d0267b9328e489d">38 — Pond to Pond</option>
+      <option value="ddd8808544dd1b719f397b51bd7374455737e0c8d2d2e77274ac407da161ec1c">39 — Polycopter</option>
+      <option value="ca2c575bca007e4f1670526538700cd1ce2df7527d90f32e9d761dd0db8027f1">40 — Engine Failure</option>
+      <option value="ccdaee0539402f633b13ddf1b2100c6a56bfcbbdca6053050c283bfc7959a331">41 — 바닥에 오줌 싸다 PP5</option>
+      <option value="5dbf4bb61a4ffe14c25ba3173ccc2c548d4b5a28292b215b44d0ed4fc0f74463">42 — Reflections</option>
+      <option value="68f600b30716f430818b7f5165c28e54c5925bfeaa9d9bf3a84f402fa766fdfd">43 — Flipping State</option>
+      <option value="90cda57f339684d20961765c16cb4ad49dcdb28db1cf474bbc691614b5396c47">44 — Crime Scene</option>
+      <option value="0bad92a5eac84fcc1e01e6c1d89353aca73e12d1a598f5607f4ee3130316dcbb">45 — Trapped</option>
+      <option value="17f82495bddf50a6610ad1874a184cd4bf635b269d1aa1df4abfcfd8b8aed847">46 — Acrobatics</option>
+      <option value="ff8e2dfb0b6056b3e785ff6e383ca004352d193cdad1f5ff0cea847b65ba174d">47 — Dusty Derek</option>
+      <option value="caf1784817929f44c3d847582928862560d8e448f89190afe52bf832116fd7f9">48 — Back Pain</option>
+      <option value="6cb20e2a983f5518b9fa0351b798781e272e8f1b227484a24dd10d37be122374">49 — FLING</option>
+      <option value="0fcff40be442f4acedc9383c1ae927b4c6488683772061352045f17d00cc150c">50 — FlameWall</option>
     </select>
     <input type="text" id="searchInput" placeholder="Search player..." />
-    <label class="checkbox-wrap">
-      <input type="checkbox" id="verifiedOnly"> verified only
-    </label>
   </div>
 
   <div class="status" id="statusBar"></div>
@@ -367,11 +300,10 @@
           <th>player</th>
           <th></th>
           <th>time</th>
-          <th>status</th>
         </tr>
       </thead>
       <tbody id="lbBody">
-        <tr class="msg-row"><td colspan="5"><span class="spinner"></span>loading...</td></tr>
+        <tr class="msg-row"><td colspan="4"><span class="spinner"></span>loading...</td></tr>
       </tbody>
     </table>
   </div>
@@ -383,9 +315,8 @@ let currentData = [];
 let searchTerm = '';
 
 function framesToTime(frames) {
-  const totalMs = Math.round((frames / 60) * 1000);
-  const ms = totalMs % 1000;
-  const totalSec = Math.floor(totalMs / 1000);
+  const ms = frames % 1000;
+  const totalSec = Math.floor(frames / 1000);
   const sec = totalSec % 60;
   const min = Math.floor(totalSec / 60);
   return `${min}:${String(sec).padStart(2,'0')}.${String(ms).padStart(3,'0')}`;
@@ -405,7 +336,7 @@ function render(data) {
     ? data.filter(e => e.nickname.toLowerCase().includes(searchTerm))
     : data;
   if (!filtered.length) {
-    body.innerHTML = '<tr class="msg-row"><td colspan="5">no results found</td></tr>';
+    body.innerHTML = '<tr class="msg-row"><td colspan="4">no results found</td></tr>';
     return;
   }
   body.innerHTML = filtered.map((e, i) => {
@@ -416,34 +347,32 @@ function render(data) {
       <td class="player-name" title="${e.nickname}">${e.nickname}</td>
       <td><span class="flag">${countryFlag(e.countryCode)}</span></td>
       <td class="time">${framesToTime(e.frames)}</td>
-      <td><span class="badge ${e.verifiedState === 1 ? 'badge-verified' : 'badge-unverified'}">${e.verifiedState === 1 ? 'verified' : 'unverified'}</span></td>
     </tr>`;
   }).join('');
 }
 
 async function loadTrack() {
   const trackId = document.getElementById('trackSelect').value;
-  const verifiedOnly = document.getElementById('verifiedOnly').checked;
   const body = document.getElementById('lbBody');
   const status = document.getElementById('statusBar');
-  body.innerHTML = '<tr class="msg-row"><td colspan="5"><span class="spinner"></span>loading...</td></tr>';
+  body.innerHTML = '<tr class="msg-row"><td colspan="4"><span class="spinner"></span>loading...</td></tr>';
   status.textContent = '';
   try {
-    const target = `https://vps.kodub.com/v6/leaderboard?version=0.6.0&trackId=${trackId}&skip=0&amount=20&onlyVerified=${verifiedOnly}&userTokenHash=${USER_TOKEN}`;
-    const url = `https://corsproxy.io/?url=${encodeURIComponent(target)}`;
+    const target = `https://vps.kodub.com/v6/leaderboard?version=0.6.0&trackId=${trackId}&skip=0&amount=20&onlyVerified=false&userTokenHash=${USER_TOKEN}`;
+    const url = `https://api.allorigins.win/get?url=${encodeURIComponent(target)}`;
     const res = await fetch(url);
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const json = await res.json();
+    const wrapper = await res.json();
+    const json = JSON.parse(wrapper.contents);
     currentData = json.entries || [];
     status.innerHTML = `<span class="total-tag">${(json.total || 0).toLocaleString()} total entries</span>`;
     render(currentData);
   } catch(err) {
-    body.innerHTML = `<tr class="msg-row error"><td colspan="5">failed to load — ${err.message}</td></tr>`;
+    body.innerHTML = `<tr class="msg-row error"><td colspan="4">failed to load — ${err.message}</td></tr>`;
   }
 }
 
 document.getElementById('trackSelect').addEventListener('change', loadTrack);
-document.getElementById('verifiedOnly').addEventListener('change', loadTrack);
 document.getElementById('searchInput').addEventListener('input', e => {
   searchTerm = e.target.value.toLowerCase().trim();
   render(currentData);
