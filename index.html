@@ -530,9 +530,9 @@ function decodeCarColors(carStyle) {
     const pad = b64 + '='.repeat(-b64.length % 4);
     const bin = atob(pad);
     const bytes = Uint8Array.from(bin, c => c.charCodeAt(0));
-    // skip 4 header bytes, then read 2 RGB triplets
+    // 4 header bytes, color1 RGB at 4-6, color2 RGB at 10-12
     const c1 = `${bytes[4]}, ${bytes[5]}, ${bytes[6]}`;
-    const c2 = `${bytes[7]}, ${bytes[8]}, ${bytes[9]}`;
+    const c2 = `${bytes[10]}, ${bytes[11]}, ${bytes[12]}`;
     return { c1, c2 };
   } catch { return null; }
 }
@@ -630,7 +630,7 @@ function render(data) {
     if (globalRank <= 3) {
       const colors = decodeCarColors(e.carStyle);
       if (colors) {
-        rowStyle = `style="cursor:pointer;background:linear-gradient(90deg, rgba(${colors.c1},0.38) 0%, rgba(${colors.c2},0.22) 60%, transparent 100%)"`;
+        rowStyle = `style="cursor:pointer;background:linear-gradient(90deg, rgba(${colors.c1},0.55) 0%, rgba(${colors.c2},0.35) 60%, transparent 100%)"`;
         rankTdStyle = `style="text-align:center;box-shadow:inset 3px 0 0 rgb(${colors.c1})"`;
         carSwatch = `<span title="car colors" style="display:inline-block;width:28px;height:11px;border-radius:3px;background:linear-gradient(90deg,rgb(${colors.c1}),rgb(${colors.c2}));vertical-align:middle;margin-left:7px;margin-bottom:1px;border:1px solid rgba(255,255,255,0.12)"></span>`;
       }
