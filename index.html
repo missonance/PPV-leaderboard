@@ -402,7 +402,7 @@
   </div>
 
   <div class="status" id="statusBar"></div>
-  <div style="font-size:0.7rem;color:var(--muted);margin-bottom:0.5rem" id="refreshStatus"></div>
+  <div style="font-size:0.7rem;color:var(--muted);margin-bottom:0.5rem;display:flex;align-items:center;gap:0.75rem" id="refreshStatus"><button id="refreshBtn" onclick="refreshAllTracks()" style="font-size:0.65rem;font-family:var(--mono);background:var(--surface2);color:var(--muted);border:1px solid var(--border);border-radius:4px;padding:2px 8px;cursor:pointer;transition:color 0.15s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--muted)'">force refresh</button><span id="refreshAge"></span></div>
 
   <div class="table-wrap">
     <table>
@@ -504,6 +504,30 @@ let totalEntries = 0;
 let refreshing = false;
 let lastRefresh = 0;
 
+function timeAgo(ts) {
+  if (!ts) return 'never';
+  const diff = Math.floor((Date.now() - ts) / 1000);
+  if (diff < 60) return `${diff}s ago`;
+  if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
+  return `${Math.floor(diff / 3600)}h ago`;
+}
+
+function startLiveAgo() {
+  function tick() {
+    const trackId = document.getElementById('trackSelect').value;
+    const track = cache[trackId];
+    const ageEl = document.getElementById('refreshAge');
+    const cacheAgeEl = document.getElementById('cacheAge');
+    if (!ageEl) return;
+    if (!track || !track.updatedAt) { ageEl.textContent = ''; return; }
+    const ago = timeAgo(track.updatedAt);
+    ageEl.textContent = `server data: ${ago}`;
+    if (cacheAgeEl) cacheAgeEl.textContent = `· updated ${ago}`;
+  }
+  tick();
+  setInterval(tick, 10000);
+}
+
 function framesToTime(ms) {
   const msec = ms % 1000;
   const totalSec = Math.floor(ms / 1000);
@@ -549,26 +573,25 @@ function getContrastColor(bgRgbStr) {
 async function refreshAllTracks() {
   if (refreshing) return;
   refreshing = true;
-  const statusEl = document.getElementById('refreshStatus');
+  const btn = document.getElementById('refreshBtn');
+  if (btn) { btn.disabled = true; btn.textContent = 'refreshing...'; }
 
   for (let i = 0; i < TRACK_IDS.length; i++) {
     const trackId = TRACK_IDS[i];
-    statusEl.textContent = `refreshing... ${i + 1} / ${TRACK_IDS.length}`;
+    document.getElementById('refreshAge').textContent = `refreshing... ${i + 1} / ${TRACK_IDS.length}`;
     try {
       const res = await fetch(`${WORKER}/refresh?trackId=${trackId}`);
       const json = await res.json();
-      if (json.ok) {
-        cache[trackId] = { ...TRACKS[trackId], updatedAt: Date.now(), entries: json.entries || [] };
+      if (json.entries) {
+        cache[trackId] = { ...TRACKS[trackId], updatedAt: json.updatedAt || Date.now(), entries: json.entries };
       }
     } catch(e) {}
   }
 
-  // reload fresh data from KV after refresh
-  await loadAllFromCache();
   lastRefresh = Date.now();
   refreshing = false;
-  statusEl.textContent = `last refresh: ${new Date(lastRefresh).toLocaleTimeString()}`;
-  setTimeout(refreshAllTracks, REFRESH_INTERVAL);
+  if (btn) { btn.disabled = false; btn.textContent = 'force refresh'; }
+  showTrack();
 }
 
 async function loadAllFromCache() {
@@ -585,6 +608,7 @@ async function loadAllFromCache() {
   }
 
   showTrack();
+  startLiveAgo();
 }
 
 function showTrack() {
@@ -605,8 +629,7 @@ function showTrack() {
   const start = currentPage * PAGE_SIZE;
   currentData = allEntries.slice(start, start + PAGE_SIZE);
 
-  const updated = new Date(track.updatedAt).toLocaleTimeString();
-  status.innerHTML = `<span class="total-tag">${totalEntries.toLocaleString()} total finishes</span> <span style="color:var(--muted);font-size:0.7rem">· cached ${updated}</span>`;
+  status.innerHTML = `<span class="total-tag">${totalEntries.toLocaleString()} total finishes</span> <span style="color:var(--muted);font-size:0.7rem" id="cacheAge">· updated ${timeAgo(track.updatedAt)}</span>`;
 
   render(currentData);
   renderPagination(Math.ceil(totalEntries / PAGE_SIZE));
@@ -751,7 +774,7 @@ document.getElementById('searchInput').addEventListener('input', e => {
   render(currentData);
 });
 
-loadAllFromCache().then(() => refreshAllTracks());
+loadAllFromCache();
 </script>
 </body>
 </html>
