@@ -537,7 +537,7 @@ function framesToTime(ms) {
 }
 
 function decodeCarColors(carStyle) {
-  if (!carStyle) { console.log('decodeCarColors: no carStyle'); return null; }
+  if (!carStyle) return null;
   try {
     const b64 = carStyle.replace(/-/g, '+').replace(/_/g, '/');
     const pad = b64 + '='.repeat((4 - b64.length % 4) % 4);
@@ -545,6 +545,8 @@ function decodeCarColors(carStyle) {
     const bytes = Uint8Array.from(bin, c => c.charCodeAt(0));
     const c1 = `${bytes[6]}, ${bytes[5]}, ${bytes[4]}`;
     const c2 = `${bytes[9]}, ${bytes[8]}, ${bytes[7]}`;
+    return { c1, c2 };
+  } catch(e) { return null; }
 }
 
 
