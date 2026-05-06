@@ -545,9 +545,6 @@ function decodeCarColors(carStyle) {
     const bytes = Uint8Array.from(bin, c => c.charCodeAt(0));
     const c1 = `${bytes[6]}, ${bytes[5]}, ${bytes[4]}`;
     const c2 = `${bytes[9]}, ${bytes[8]}, ${bytes[7]}`;
-    console.log('decodeCarColors:', carStyle, '-> c1:', c1, 'c2:', c2);
-    return { c1, c2 };
-  } catch(e) { console.log('decodeCarColors ERROR:', e); return null; }
 }
 
 
