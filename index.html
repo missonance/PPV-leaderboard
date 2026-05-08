@@ -334,7 +334,7 @@
   .modal-stat-value.silver { color: var(--silver); }
   .modal-stat-value.bronze { color: var(--bronze); }
 
-  /* ── SERVER STATUS SECTION ── */
+  /* ── SERVER STATUS + SCHEDULE ── */
   .servers-section {
     margin-top: 4rem;
     border-top: 1px solid var(--border);
@@ -350,7 +350,7 @@
     gap: 0.5rem;
   }
 
-  .servers-title {
+  .servers-title, .schedule-title {
     font-size: 1.1rem;
     font-weight: 600;
     letter-spacing: -0.01em;
@@ -364,13 +364,32 @@
     text-transform: uppercase;
   }
 
+  .servers-meta-bar {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    margin-bottom: 1.25rem;
+    flex-wrap: wrap;
+  }
+
   .servers-age {
     font-size: 0.68rem;
     color: var(--muted);
     display: flex;
     align-items: center;
     gap: 6px;
-    margin-bottom: 1.25rem;
+  }
+
+  .central-timer {
+    font-size: 0.75rem;
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .central-timer span {
+    color: var(--accent);
+    font-weight: 600;
+    font-size: 0.9rem;
   }
 
   .live-dot {
@@ -385,7 +404,7 @@
 
   .servers-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
     gap: 12px;
   }
 
@@ -401,7 +420,7 @@
 
   .server-card-img {
     width: 100%;
-    height: 160px;
+    height: 150px;
     object-fit: cover;
     display: block;
     background: var(--surface2);
@@ -409,7 +428,7 @@
 
   .server-card-img-placeholder {
     width: 100%;
-    height: 160px;
+    height: 150px;
     background: var(--surface2);
     display: flex;
     align-items: center;
@@ -419,18 +438,18 @@
     letter-spacing: 0.05em;
   }
 
-  .server-card-body { padding: 0.85rem 1rem; }
+  .server-card-body { padding: 0.75rem 1rem; }
 
   .server-card-name {
-    font-size: 0.65rem;
+    font-size: 0.62rem;
     color: var(--muted);
     letter-spacing: 0.1em;
     text-transform: uppercase;
-    margin-bottom: 4px;
+    margin-bottom: 3px;
   }
 
   .server-card-track {
-    font-size: 0.9rem;
+    font-size: 0.88rem;
     font-weight: 600;
     color: #fff;
     margin-bottom: 2px;
@@ -440,9 +459,8 @@
   }
 
   .server-card-next {
-    font-size: 0.72rem;
+    font-size: 0.7rem;
     color: var(--muted);
-    margin-bottom: 8px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -450,52 +468,101 @@
 
   .server-card-next span { color: var(--accent); }
 
-  .server-card-meta {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 8px;
-  }
-
-  .server-card-players {
-    font-size: 0.7rem;
-    color: var(--muted);
-  }
-
-  .server-card-players b { color: var(--text); }
-
-  .server-card-timeleft {
-    font-size: 0.7rem;
-    color: var(--muted);
-    font-variant-numeric: tabular-nums;
-  }
-
-  .server-card-timeleft span {
-    color: var(--accent);
-    font-weight: 500;
-  }
-
-  .server-card-invite {
-    font-size: 0.65rem;
-    background: rgba(114,114,194,0.12);
-    border: 1px solid rgba(114,114,194,0.3);
-    color: var(--accent);
-    padding: 2px 7px;
-    border-radius: 3px;
-    letter-spacing: 0.06em;
-    font-weight: 500;
-    cursor: pointer;
-    transition: background 0.15s;
-  }
-
-  .server-card-invite:hover { background: rgba(114,114,194,0.22); }
-
   .server-error {
     color: var(--muted);
     font-size: 0.8rem;
     padding: 1.5rem 0;
     text-align: center;
   }
+
+  .schedule-section {
+    margin-top: 2.5rem;
+    border-top: 1px solid var(--border);
+    padding-top: 2rem;
+  }
+
+  .schedule-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  .schedule-header-left {
+    display: flex;
+    align-items: baseline;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .schedule-tz {
+    font-size: 0.68rem;
+    color: var(--muted);
+    letter-spacing: 0.06em;
+  }
+
+  /* schedule server select — smaller than main selects */
+  .schedule-server-select {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    padding: 5px 28px 5px 10px;
+    border-radius: 4px;
+    outline: none;
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23666670' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 9px center;
+    transition: border-color 0.15s;
+  }
+  .schedule-server-select:hover { border-color: var(--border2); }
+  .schedule-server-select:focus { border-color: var(--accent); }
+
+  .schedule-wrap {
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+
+  .schedule-wrap table { width: 100%; border-collapse: collapse; font-size: 0.78rem; }
+  .schedule-wrap thead { background: var(--surface2); }
+
+  .schedule-wrap th {
+    padding: 8px 14px;
+    text-align: left;
+    font-size: 0.65rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    border-bottom: 1px solid var(--border);
+    border-right: 1px solid var(--border);
+  }
+
+  .schedule-wrap th:last-child { border-right: none; }
+
+  .schedule-wrap td {
+    padding: 9px 14px;
+    border-bottom: 1px solid var(--border);
+    border-right: 1px solid var(--border);
+    vertical-align: middle;
+  }
+
+  .schedule-wrap td:last-child { border-right: none; }
+  .schedule-wrap tr:last-child td { border-bottom: none; }
+  .schedule-wrap tbody tr { background: var(--surface); }
+  .schedule-wrap tbody tr:nth-child(even) { background: #182040; }
+
+  .sched-num { color: var(--muted); font-size: 0.7rem; text-align: center; width: 36px; }
+  .sched-name { color: var(--text); font-weight: 500; }
+  .sched-time { font-variant-numeric: tabular-nums; color: var(--accent); white-space: nowrap; }
+  .sched-countdown { font-variant-numeric: tabular-nums; color: var(--muted); font-size: 0.72rem; white-space: nowrap; }
 </style>
 </head>
 <body>
@@ -590,12 +657,47 @@
       <div class="servers-title">LIVE SERVERS</div>
       <div class="servers-sub">dorapolytrack // ppv</div>
     </div>
-    <div class="servers-age">
-      <span class="live-dot"></span>
-      <span id="srvAge">loading...</span>
+    <div class="servers-meta-bar">
+      <div class="servers-age">
+        <span class="live-dot"></span>
+        <span id="srvAge">loading...</span>
+      </div>
+      <div class="central-timer" id="centralTimer" style="display:none">
+        next track in <span id="centralTimerVal">—</span>
+      </div>
     </div>
     <div class="servers-grid" id="serversGrid">
       <div class="server-error"><span class="spinner"></span>fetching servers...</div>
+    </div>
+  </div>
+
+  <!-- ── SCHEDULE ── -->
+  <div class="schedule-section" id="scheduleSection" style="display:none">
+    <div class="schedule-header">
+      <div class="schedule-header-left">
+        <div class="schedule-title">UPCOMING TRACKS</div>
+        <div class="schedule-tz" id="scheduleTz"></div>
+      </div>
+      <select class="schedule-server-select" id="scheduleServerSelect">
+        <option value="0">server 0</option>
+        <option value="1">server 1</option>
+        <option value="2">server 2</option>
+        <option value="3">server 3</option>
+        <option value="4">server 4</option>
+      </select>
+    </div>
+    <div class="schedule-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th style="text-align:center">#</th>
+            <th>track</th>
+            <th>local time</th>
+            <th>in</th>
+          </tr>
+        </thead>
+        <tbody id="scheduleBody"></tbody>
+      </table>
     </div>
   </div>
 </div>
@@ -617,6 +719,7 @@
 const WORKER = 'https://square-lab-fa4f.missonance.workers.dev';
 const PAGE_SIZE = 20;
 const REFRESH_INTERVAL = 20 * 60 * 1000;
+const TRACK_SLOT_SECS = 600; // 10 minutes per track slot
 
 const TRACKS = {
   "20ea0dbd62c28316ee86e20b04bb14f3acb89d036c5da16b3cb4a9b19a9232e4": { num: 1,  name: "OMPHALOSKEPSIS X" },
@@ -673,14 +776,10 @@ const TRACKS = {
 
 const NUM_TO_ID = {};
 Object.entries(TRACKS).forEach(([id, t]) => { NUM_TO_ID[t.num] = id; });
-
 const TRACK_IDS = Object.keys(TRACKS);
 
 const IMG_BASE = 'https://raw.githubusercontent.com/DoraChad/PPV/refs/heads/main/trackImages/';
-
-function trackImgUrl(trackNum) {
-  return `${IMG_BASE}${trackNum}.png`;
-}
+function trackImgUrl(trackNum) { return `${IMG_BASE}${trackNum}.png`; }
 
 function getTrackByNum(num) {
   const wrapped = ((num - 1) % 50) + 1;
@@ -688,6 +787,7 @@ function getTrackByNum(num) {
   return id ? { id, ...TRACKS[id] } : null;
 }
 
+// ── LEADERBOARD STATE ──
 let cache = {};
 let currentData = [];
 let searchTerm = '';
@@ -944,11 +1044,14 @@ document.getElementById('searchInput').addEventListener('input', e => {
 
 loadAllFromCache();
 
+
 const SERVER_COUNT = 5;
 const SERVER_POLL_MS = 30000;
-let srvLastData = [];
-let srvTimers = []; 
-let srvCountdownInterval = null;
+
+
+let srvData = Array.from({ length: SERVER_COUNT }, () => null);
+let srvLastRaw = [];
+let selectedScheduleServer = 0;
 
 function srvTrackByNum(num) {
   const wrapped = ((num - 1) % 50) + 1;
@@ -983,7 +1086,6 @@ function renderServerCards(servers) {
     grid.innerHTML = '<div class="server-error">Could not reach server API.</div>';
     return;
   }
-
   grid.innerHTML = servers.map(srv => {
     if (srv.error) {
       return `<div class="server-card">
@@ -994,81 +1096,208 @@ function renderServerCards(servers) {
         </div>
       </div>`;
     }
-
     const currentNum = srv.track;
     const currentTrack = srvTrackByNum(currentNum);
     const nextTrack = srvTrackByNum(currentNum + 1);
-    const currentId = currentTrack ? currentTrack.id : null;
     const imgUrl = currentTrack ? trackImgUrl(currentTrack.num) : null;
-
     const currentLabel = currentTrack ? `${currentTrack.num} — ${currentTrack.name}` : `track ${currentNum}`;
     const nextLabel = nextTrack ? `${nextTrack.num} — ${nextTrack.name}` : '—';
-    const timeLeft = typeof srv.timeLeft === 'number' ? srv.timeLeft : null;
-    const invite = srv.invite || null;
-
     const imgHtml = imgUrl
       ? `<img class="server-card-img" src="${imgUrl}" alt="${currentLabel}" onerror="this.outerHTML='<div class=\\'server-card-img-placeholder\\'>no image</div>'">`
       : `<div class="server-card-img-placeholder">no image</div>`;
-
-    const timerHtml = timeLeft !== null
-      ? `<div class="server-card-timeleft">next in <span id="srvTimer${srv.serverIndex}">${formatCountdown(timeLeft)}</span></div>`
-      : '';
-
-    const inviteHtml = invite
-      ? `<span class="server-card-invite" title="Invite code">${invite}</span>`
-      : '';
-
     return `<div class="server-card">
       ${imgHtml}
       <div class="server-card-body">
         <div class="server-card-name">server ${srv.serverIndex}</div>
         <div class="server-card-track">${currentLabel}</div>
         <div class="server-card-next">next: <span>${nextLabel}</span></div>
-        <div class="server-card-meta">
-          ${timerHtml}
-          ${inviteHtml}
-        </div>
       </div>
     </div>`;
   }).join('');
 }
 
-function startCountdowns(servers) {
 
-  if (srvCountdownInterval) clearInterval(srvCountdownInterval);
+const srvTimers = {};
 
-  const counters = {};
-  servers.forEach(srv => {
-    if (!srv.error && typeof srv.timeLeft === 'number') {
-      counters[srv.serverIndex] = srv.timeLeft;
+function startServerCountdown(serverIndex, timeLeft) {
+  if (srvTimers[serverIndex]) {
+    clearInterval(srvTimers[serverIndex].interval);
+  }
+  srvTimers[serverIndex] = { secs: timeLeft, baseTimeLeft: timeLeft };
+  srvTimers[serverIndex].interval = setInterval(() => {
+    srvTimers[serverIndex].secs = Math.max(0, srvTimers[serverIndex].secs - 1);
+
+    const firstLiveIdx = srvLastRaw.findIndex(s => s && !s.error && typeof s.timeLeft === 'number');
+    if (firstLiveIdx === serverIndex) {
+      const valEl = document.getElementById('centralTimerVal');
+      if (valEl) valEl.textContent = formatCountdown(srvTimers[serverIndex].secs);
+    }
+
+    if (serverIndex === selectedScheduleServer) {
+      renderScheduleCountdowns(serverIndex);
+    }
+  }, 1000);
+}
+
+
+function getUserTimezone() {
+  try { return Intl.DateTimeFormat().resolvedOptions().timeZone; } catch(e) { return 'UTC'; }
+}
+
+function formatLocalTime(date, tz) {
+  try {
+    return date.toLocaleTimeString('en-US', {
+      timeZone: tz,
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true
+    });
+  } catch(e) { return date.toLocaleTimeString(); }
+}
+
+function formatLocalDate(date, tz) {
+  const now = new Date();
+  const todayStr = now.toLocaleDateString('en-CA', { timeZone: tz });
+  const dateStr = date.toLocaleDateString('en-CA', { timeZone: tz });
+  if (dateStr === todayStr) return 'today';
+  const tomorrow = new Date(now);
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  const tomorrowStr = tomorrow.toLocaleDateString('en-CA', { timeZone: tz });
+  if (dateStr === tomorrowStr) return 'tomorrow';
+  return date.toLocaleDateString('en-US', { timeZone: tz, weekday: 'short', month: 'short', day: 'numeric' });
+}
+
+function renderScheduleForServer(serverIndex) {
+  const srv = srvLastRaw[serverIndex];
+  const section = document.getElementById('scheduleSection');
+  const body = document.getElementById('scheduleBody');
+  const tzEl = document.getElementById('scheduleTz');
+  if (!section || !body) return;
+
+  if (!srv || srv.error || typeof srv.timeLeft !== 'number') {
+    section.style.display = '';
+    body.innerHTML = `<tr><td colspan="4" class="sched-num" style="padding:1.5rem;text-align:center;color:var(--muted)">server ${serverIndex} offline or unavailable</td></tr>`;
+    return;
+  }
+
+  const tz = getUserTimezone();
+  tzEl.textContent = tz;
+  section.style.display = '';
+
+  const timeLeft = srvTimers[serverIndex] ? srvTimers[serverIndex].secs : srv.timeLeft;
+  const currentTrackNum = srv.track;
+  const now = Date.now();
+
+  const rows = [];
+  for (let i = 1; i <= 10; i++) {
+    const trackNum = ((currentTrackNum - 1 + i) % 50) + 1;
+    const track = srvTrackByNum(trackNum);
+
+    const secsUntilStart = timeLeft + (i - 1) * TRACK_SLOT_SECS;
+    const startDate = new Date(now + secsUntilStart * 1000);
+    const dateLabel = formatLocalDate(startDate, tz);
+    const timeLabel = formatLocalTime(startDate, tz);
+    rows.push({ trackNum, track, secsUntilStart, dateLabel, timeLabel });
+  }
+
+  window._scheduleRows = rows;
+  window._scheduleServerIndex = serverIndex;
+
+  body.innerHTML = rows.map((r, i) => {
+    const label = r.track ? r.track.name : `track ${r.trackNum}`;
+    const secsUntil = r.secsUntilStart;
+    const countdownStr = secsUntil < 3600
+      ? formatCountdown(Math.round(secsUntil))
+      : `~${Math.floor(secsUntil / 3600)}h ${Math.floor((secsUntil % 3600) / 60)}m`;
+    return `<tr>
+      <td class="sched-num">${r.trackNum}</td>
+      <td class="sched-name">${label}</td>
+      <td class="sched-time"><span style="color:var(--muted);font-size:0.65rem;margin-right:4px">${r.dateLabel}</span>${r.timeLabel}</td>
+      <td class="sched-countdown" id="schedRow${i}">${countdownStr}</td>
+    </tr>`;
+  }).join('');
+}
+
+function renderScheduleCountdowns(serverIndex) {
+  if (!window._scheduleRows || window._scheduleServerIndex !== serverIndex) return;
+  const timer = srvTimers[serverIndex];
+  if (!timer) return;
+  const elapsed = timer.baseTimeLeft - timer.secs;
+  window._scheduleRows.forEach((r, i) => {
+    const el = document.getElementById(`schedRow${i}`);
+    if (!el) return;
+    const secsUntil = Math.max(0, r.secsUntilStart - elapsed);
+    el.textContent = secsUntil < 3600
+      ? formatCountdown(Math.round(secsUntil))
+      : `~${Math.floor(secsUntil / 3600)}h ${Math.floor((secsUntil % 3600) / 60)}m`;
+  });
+}
+
+
+function updateScheduleServerOptions(servers) {
+  const sel = document.getElementById('scheduleServerSelect');
+  if (!sel) return;
+  Array.from(sel.options).forEach((opt, i) => {
+    const srv = servers[i];
+    if (!srv || srv.error) {
+      opt.textContent = `server ${i} (offline)`;
+      opt.disabled = true;
+    } else {
+      const t = srvTrackByNum(srv.track);
+      opt.textContent = `server ${i} — track ${srv.track}${t ? ': ' + t.name : ''}`;
+      opt.disabled = false;
     }
   });
 
-  srvCountdownInterval = setInterval(() => {
-    let anyActive = false;
-    for (const [idx, _] of Object.entries(counters)) {
-      counters[idx] = Math.max(0, counters[idx] - 1);
-      const el = document.getElementById(`srvTimer${idx}`);
-      if (el) {
-        el.textContent = formatCountdown(counters[idx]);
-        anyActive = true;
-      }
+  const curSrv = servers[selectedScheduleServer];
+  if (!curSrv || curSrv.error) {
+    const firstLive = servers.findIndex(s => s && !s.error);
+    if (firstLive !== -1) {
+      selectedScheduleServer = firstLive;
+      sel.value = String(firstLive);
     }
-    if (!anyActive) clearInterval(srvCountdownInterval);
-  }, 1000);
+  }
 }
 
 async function pollServers() {
   const servers = await fetchAllServers();
-  const changed = JSON.stringify(servers) !== JSON.stringify(srvLastData);
-  if (changed) {
-    srvLastData = servers;
-    renderServerCards(servers);
-    startCountdowns(servers);
+  srvLastRaw = servers;
+
+  renderServerCards(servers);
+  updateScheduleServerOptions(servers);
+
+
+  servers.forEach(srv => {
+    if (!srv.error && typeof srv.timeLeft === 'number') {
+
+      const existing = srvTimers[srv.serverIndex];
+      if (!existing || Math.abs(existing.secs - srv.timeLeft) > 5) {
+        startServerCountdown(srv.serverIndex, srv.timeLeft);
+      }
+    }
+  });
+
+
+  const firstLive = servers.find(s => !s.error && typeof s.timeLeft === 'number');
+  const timerEl = document.getElementById('centralTimer');
+  if (firstLive && timerEl) {
+    timerEl.style.display = '';
+    const valEl = document.getElementById('centralTimerVal');
+    if (valEl && srvTimers[firstLive.serverIndex]) {
+      valEl.textContent = formatCountdown(srvTimers[firstLive.serverIndex].secs);
+    }
   }
+
+  renderScheduleForServer(selectedScheduleServer);
+
   const ageEl = document.getElementById('srvAge');
   if (ageEl) ageEl.textContent = `updated just now · refreshes every 30s`;
 }
+
+document.getElementById('scheduleServerSelect').addEventListener('change', function() {
+  selectedScheduleServer = parseInt(this.value);
+  renderScheduleForServer(selectedScheduleServer);
+});
 
 pollServers();
 setInterval(pollServers, SERVER_POLL_MS);
