@@ -163,7 +163,6 @@
   }
 
   tbody tr:hover { background: var(--surface2); }
-  tbody tr:hover td[style*="linear-gradient"] { filter: brightness(1.2); }
 
   tbody tr:nth-child(even) { background: #182040; }
   tbody tr:nth-child(even):hover { background: var(--surface2); }
@@ -334,6 +333,169 @@
   .modal-stat-value.gold { color: var(--gold); }
   .modal-stat-value.silver { color: var(--silver); }
   .modal-stat-value.bronze { color: var(--bronze); }
+
+  /* ── SERVER STATUS SECTION ── */
+  .servers-section {
+    margin-top: 4rem;
+    border-top: 1px solid var(--border);
+    padding-top: 2.5rem;
+  }
+
+  .servers-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 0.4rem;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .servers-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    color: var(--accent);
+  }
+
+  .servers-sub {
+    font-size: 0.68rem;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .servers-age {
+    font-size: 0.68rem;
+    color: var(--muted);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 1.25rem;
+  }
+
+  .live-dot {
+    display: inline-block;
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: #4caf50;
+    animation: blink 2s ease-in-out infinite;
+  }
+
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.4} }
+
+  .servers-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 12px;
+  }
+
+  .server-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    transition: border-color 0.15s;
+  }
+
+  .server-card:hover { border-color: var(--border2); }
+
+  .server-card-img {
+    width: 100%;
+    height: 160px;
+    object-fit: cover;
+    display: block;
+    background: var(--surface2);
+  }
+
+  .server-card-img-placeholder {
+    width: 100%;
+    height: 160px;
+    background: var(--surface2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--muted);
+    font-size: 0.7rem;
+    letter-spacing: 0.05em;
+  }
+
+  .server-card-body { padding: 0.85rem 1rem; }
+
+  .server-card-name {
+    font-size: 0.65rem;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+
+  .server-card-track {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #fff;
+    margin-bottom: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .server-card-next {
+    font-size: 0.72rem;
+    color: var(--muted);
+    margin-bottom: 8px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .server-card-next span { color: var(--accent); }
+
+  .server-card-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+  }
+
+  .server-card-players {
+    font-size: 0.7rem;
+    color: var(--muted);
+  }
+
+  .server-card-players b { color: var(--text); }
+
+  .server-card-timeleft {
+    font-size: 0.7rem;
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .server-card-timeleft span {
+    color: var(--accent);
+    font-weight: 500;
+  }
+
+  .server-card-invite {
+    font-size: 0.65rem;
+    background: rgba(114,114,194,0.12);
+    border: 1px solid rgba(114,114,194,0.3);
+    color: var(--accent);
+    padding: 2px 7px;
+    border-radius: 3px;
+    letter-spacing: 0.06em;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+
+  .server-card-invite:hover { background: rgba(114,114,194,0.22); }
+
+  .server-error {
+    color: var(--muted);
+    font-size: 0.8rem;
+    padding: 1.5rem 0;
+    text-align: center;
+  }
 </style>
 </head>
 <body>
@@ -354,7 +516,7 @@
       <option value="3583b7427394e5e2a641f274b8df5de6aab2de65c2286b14e312565df86ca885">5 — Phytoforce</option>
       <option value="acf0e59570c2177ec50550f856a396d9a725be6529c838eed4963de5874478d7">6 — Ojel</option>
       <option value="6628ac96adf10a46d25e30947b9b5685d3c2285209e0b0d40f7e9b240046c03d">7 — 3:00 AM</option>
-      <option value="d9aa76f7f57d392c779b9597ef3f6c35f15d7540f7d261e0910c850c22bb42df">8 — Flipping City</option>
+      <option value="ea89139a2174dd5126dd1bf7f052168ebab3830abcde7fa9c2a8da4b1c560e54">8 — Flipping City</option>
       <option value="bd379d3b9000a2f71988ab15bf6947f61c392c269760a87a3555338be5d1886b">9 — Around the Rosy</option>
       <option value="e8bddc248df6500693a0a3e6bc6a0b8a6402651f5c80f9f07b658be851656c56">10 — Flight 77</option>
       <option value="16c7b10b85e60edfb77b7abeb60a41309028e16c111e2f98a45b82dda4521d80">11 — Upper Edge</option>
@@ -421,6 +583,21 @@
   </div>
 
   <div class="pagination" id="pagination"></div>
+
+  <!-- ── SERVER STATUS ── -->
+  <div class="servers-section">
+    <div class="servers-header">
+      <div class="servers-title">LIVE SERVERS</div>
+      <div class="servers-sub">dorapolytrack // ppv</div>
+    </div>
+    <div class="servers-age">
+      <span class="live-dot"></span>
+      <span id="srvAge">loading...</span>
+    </div>
+    <div class="servers-grid" id="serversGrid">
+      <div class="server-error"><span class="spinner"></span>fetching servers...</div>
+    </div>
+  </div>
 </div>
 
 <div class="modal-overlay" id="modalOverlay">
@@ -494,7 +671,22 @@ const TRACKS = {
   "0fcff40be442f4acedc9383c1ae927b4c6488683772061352045f17d00cc150c": { num: 50, name: "FlameWall" },
 };
 
+const NUM_TO_ID = {};
+Object.entries(TRACKS).forEach(([id, t]) => { NUM_TO_ID[t.num] = id; });
+
 const TRACK_IDS = Object.keys(TRACKS);
+
+const IMG_BASE = 'https://raw.githubusercontent.com/DoraChad/PPV/refs/heads/main/trackImages/';
+
+function trackImgUrl(trackNum) {
+  return `${IMG_BASE}${trackNum}.png`;
+}
+
+function getTrackByNum(num) {
+  const wrapped = ((num - 1) % 50) + 1;
+  const id = NUM_TO_ID[wrapped];
+  return id ? { id, ...TRACKS[id] } : null;
+}
 
 let cache = {};
 let currentData = [];
@@ -549,7 +741,6 @@ function decodeCarColors(carStyle) {
   } catch(e) { return null; }
 }
 
-
 function countryFlag(code) {
   if (!code) return '';
   const lower = code.toLowerCase();
@@ -574,7 +765,6 @@ async function refreshAllTracks() {
   refreshing = true;
   const btn = document.getElementById('refreshBtn');
   if (btn) { btn.disabled = true; btn.textContent = 'refreshing...'; }
-
   for (let i = 0; i < TRACK_IDS.length; i++) {
     const trackId = TRACK_IDS[i];
     document.getElementById('refreshAge').textContent = `refreshing... ${i + 1} / ${TRACK_IDS.length}`;
@@ -586,7 +776,6 @@ async function refreshAllTracks() {
       }
     } catch(e) {}
   }
-
   lastRefresh = Date.now();
   refreshing = false;
   if (btn) { btn.disabled = false; btn.textContent = 'force refresh'; }
@@ -596,7 +785,6 @@ async function refreshAllTracks() {
 async function loadAllFromCache() {
   const body = document.getElementById('lbBody');
   body.innerHTML = '<tr class="msg-row"><td colspan="4"><span class="spinner"></span>loading...</td></tr>';
-
   for (const trackId of TRACK_IDS) {
     try {
       const res = await fetch(`${WORKER}/data?trackId=${trackId}`);
@@ -605,7 +793,6 @@ async function loadAllFromCache() {
       cache[trackId] = { ...TRACKS[trackId], ...json };
     } catch(e) {}
   }
-
   showTrack();
   startLiveAgo();
 }
@@ -614,7 +801,6 @@ function showTrack() {
   const trackId = document.getElementById('trackSelect').value;
   const body = document.getElementById('lbBody');
   const status = document.getElementById('statusBar');
-
   const track = cache[trackId];
   if (!track || !track.entries || track.entries.length === 0) {
     body.innerHTML = '<tr class="msg-row"><td colspan="4">no data yet — refresh in progress</td></tr>';
@@ -622,23 +808,18 @@ function showTrack() {
     renderPagination(0);
     return;
   }
-
   const allEntries = track.entries;
   totalEntries = allEntries.length;
   const start = currentPage * PAGE_SIZE;
   currentData = allEntries.slice(start, start + PAGE_SIZE);
-
   status.innerHTML = `<span class="total-tag">${totalEntries.toLocaleString()} total finishes</span> <span style="color:var(--muted);font-size:0.7rem" id="cacheAge">· updated ${timeAgo(track.updatedAt)}</span>`;
-
   render(currentData);
   renderPagination(Math.ceil(totalEntries / PAGE_SIZE));
 }
 
 function render(data) {
   const body = document.getElementById('lbBody');
-  const filtered = searchTerm
-    ? data.filter(e => e.nickname.toLowerCase().includes(searchTerm))
-    : data;
+  const filtered = searchTerm ? data.filter(e => e.nickname.toLowerCase().includes(searchTerm)) : data;
   if (!filtered.length) {
     body.innerHTML = '<tr class="msg-row"><td colspan="4">no results found</td></tr>';
     return;
@@ -671,7 +852,6 @@ function render(data) {
       <td class="time" ${timeTdStyle}>${framesToTime(e.frames)}</td>
     </tr>`;
   }).join('');
-
   body.querySelectorAll('tr[data-idx]').forEach(row => {
     row.addEventListener('click', () => openModal(filtered[parseInt(row.dataset.idx)]));
   });
@@ -705,9 +885,7 @@ function openModal(entry) {
     if (match) finishes.push({ num: track.num, name: track.name, rank: match.rank, frames: match.frames });
   }
   finishes.sort((a, b) => a.num - b.num);
-
   document.getElementById('modalName').textContent = entry.nickname;
-
   const modal = document.querySelector('.modal');
   const colors = decodeCarColors(entry.carStyle);
   const wrap = document.getElementById('modalFinishesWrap');
@@ -720,7 +898,6 @@ function openModal(entry) {
     modal.style.borderColor = '';
     if (wrap) wrap.style.borderColor = '';
   }
-
   const bestRank = finishes.length ? Math.min(...finishes.map(f => f.rank)) : '—';
   document.getElementById('modalSummary').innerHTML = `
     <div class="modal-stat">
@@ -732,7 +909,6 @@ function openModal(entry) {
       <div class="modal-stat-value ${bestRank === 1 ? 'gold' : bestRank === 2 ? 'silver' : bestRank === 3 ? 'bronze' : ''}">#${bestRank}</div>
     </div>
   `;
-
   document.getElementById('modalFinishes').innerHTML = finishes.length
     ? finishes.map(f => {
         const rc = f.rank === 1 ? 'gold' : f.rank === 2 ? 'silver' : f.rank === 3 ? 'bronze' : '';
@@ -745,7 +921,6 @@ function openModal(entry) {
         </tr>`;
       }).join('')
     : `<tr><td colspan="4" style="padding:1rem;text-align:center;color:rgba(255,255,255,0.5)">no finishes found</td></tr>`;
-
   document.getElementById('modalOverlay').classList.add('open');
 }
 
@@ -759,21 +934,144 @@ function closeModal() {
 }
 
 document.getElementById('modalClose').addEventListener('click', closeModal);
-document.getElementById('modalOverlay').addEventListener('click', e => {
-  if (e.target === e.currentTarget) closeModal();
-});
+document.getElementById('modalOverlay').addEventListener('click', e => { if (e.target === e.currentTarget) closeModal(); });
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
-
-document.getElementById('trackSelect').addEventListener('change', () => {
-  currentPage = 0;
-  showTrack();
-});
+document.getElementById('trackSelect').addEventListener('change', () => { currentPage = 0; showTrack(); });
 document.getElementById('searchInput').addEventListener('input', e => {
   searchTerm = e.target.value.toLowerCase().trim();
   render(currentData);
 });
 
 loadAllFromCache();
+
+const SERVER_COUNT = 5;
+const SERVER_POLL_MS = 30000;
+let srvLastData = [];
+let srvTimers = []; 
+let srvCountdownInterval = null;
+
+function srvTrackByNum(num) {
+  const wrapped = ((num - 1) % 50) + 1;
+  const id = NUM_TO_ID[wrapped];
+  return id ? { id, num: wrapped, name: TRACKS[id].name } : null;
+}
+
+async function fetchAllServers() {
+  const results = await Promise.allSettled(
+    Array.from({ length: SERVER_COUNT }, (_, i) =>
+      fetch(`https://dorapolytrack.xyz/server/${i}/api/invite/public`)
+        .then(r => r.ok ? r.json() : null)
+        .catch(() => null)
+    )
+  );
+  return results.map((r, i) => {
+    const data = r.status === 'fulfilled' ? r.value : null;
+    return data ? { serverIndex: i, ...data } : { serverIndex: i, error: true };
+  });
+}
+
+function formatCountdown(seconds) {
+  if (seconds <= 0) return '0:00';
+  const m = Math.floor(seconds / 60);
+  const s = seconds % 60;
+  return `${m}:${String(s).padStart(2, '0')}`;
+}
+
+function renderServerCards(servers) {
+  const grid = document.getElementById('serversGrid');
+  if (!servers || servers.every(s => s.error)) {
+    grid.innerHTML = '<div class="server-error">Could not reach server API.</div>';
+    return;
+  }
+
+  grid.innerHTML = servers.map(srv => {
+    if (srv.error) {
+      return `<div class="server-card">
+        <div class="server-card-img-placeholder">server ${srv.serverIndex} offline</div>
+        <div class="server-card-body">
+          <div class="server-card-name">server ${srv.serverIndex}</div>
+          <div class="server-card-track" style="color:var(--muted)">offline</div>
+        </div>
+      </div>`;
+    }
+
+    const currentNum = srv.track;
+    const currentTrack = srvTrackByNum(currentNum);
+    const nextTrack = srvTrackByNum(currentNum + 1);
+    const currentId = currentTrack ? currentTrack.id : null;
+    const imgUrl = currentTrack ? trackImgUrl(currentTrack.num) : null;
+
+    const currentLabel = currentTrack ? `${currentTrack.num} — ${currentTrack.name}` : `track ${currentNum}`;
+    const nextLabel = nextTrack ? `${nextTrack.num} — ${nextTrack.name}` : '—';
+    const timeLeft = typeof srv.timeLeft === 'number' ? srv.timeLeft : null;
+    const invite = srv.invite || null;
+
+    const imgHtml = imgUrl
+      ? `<img class="server-card-img" src="${imgUrl}" alt="${currentLabel}" onerror="this.outerHTML='<div class=\\'server-card-img-placeholder\\'>no image</div>'">`
+      : `<div class="server-card-img-placeholder">no image</div>`;
+
+    const timerHtml = timeLeft !== null
+      ? `<div class="server-card-timeleft">next in <span id="srvTimer${srv.serverIndex}">${formatCountdown(timeLeft)}</span></div>`
+      : '';
+
+    const inviteHtml = invite
+      ? `<span class="server-card-invite" title="Invite code">${invite}</span>`
+      : '';
+
+    return `<div class="server-card">
+      ${imgHtml}
+      <div class="server-card-body">
+        <div class="server-card-name">server ${srv.serverIndex}</div>
+        <div class="server-card-track">${currentLabel}</div>
+        <div class="server-card-next">next: <span>${nextLabel}</span></div>
+        <div class="server-card-meta">
+          ${timerHtml}
+          ${inviteHtml}
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function startCountdowns(servers) {
+
+  if (srvCountdownInterval) clearInterval(srvCountdownInterval);
+
+  const counters = {};
+  servers.forEach(srv => {
+    if (!srv.error && typeof srv.timeLeft === 'number') {
+      counters[srv.serverIndex] = srv.timeLeft;
+    }
+  });
+
+  srvCountdownInterval = setInterval(() => {
+    let anyActive = false;
+    for (const [idx, _] of Object.entries(counters)) {
+      counters[idx] = Math.max(0, counters[idx] - 1);
+      const el = document.getElementById(`srvTimer${idx}`);
+      if (el) {
+        el.textContent = formatCountdown(counters[idx]);
+        anyActive = true;
+      }
+    }
+    if (!anyActive) clearInterval(srvCountdownInterval);
+  }, 1000);
+}
+
+async function pollServers() {
+  const servers = await fetchAllServers();
+  const changed = JSON.stringify(servers) !== JSON.stringify(srvLastData);
+  if (changed) {
+    srvLastData = servers;
+    renderServerCards(servers);
+    startCountdowns(servers);
+  }
+  const ageEl = document.getElementById('srvAge');
+  if (ageEl) ageEl.textContent = `updated just now · refreshes every 30s`;
+}
+
+pollServers();
+setInterval(pollServers, SERVER_POLL_MS);
 </script>
 </body>
 </html>
