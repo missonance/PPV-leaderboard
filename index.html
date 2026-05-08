@@ -334,7 +334,6 @@
   .modal-stat-value.silver { color: var(--silver); }
   .modal-stat-value.bronze { color: var(--bronze); }
 
-  /* ── SERVER STATUS + SCHEDULE ── */
   .servers-section {
     margin-top: 4rem;
     border-top: 1px solid var(--border);
@@ -503,7 +502,6 @@
     letter-spacing: 0.06em;
   }
 
-  /* schedule server select — smaller than main selects */
   .schedule-server-select {
     background: var(--surface);
     border: 1px solid var(--border);
@@ -571,7 +569,7 @@
     <div class="header-top">
       <h1>LEADERBOARD</h1>
     </div>
-    <div class="header-sub">track rankings // ppv</div>
+    <div class="header-sub">track rankings 
   </header>
 
   <div class="controls">
@@ -655,7 +653,7 @@
   <div class="servers-section">
     <div class="servers-header">
       <div class="servers-title">LIVE SERVERS</div>
-      <div class="servers-sub">dorapolytrack // ppv</div>
+      <div class="servers-sub">dorapolytrack 
     </div>
     <div class="servers-meta-bar">
       <div class="servers-age">
@@ -692,7 +690,6 @@
           <tr>
             <th style="text-align:center">#</th>
             <th>track</th>
-            <th>local time</th>
             <th>in</th>
           </tr>
         </thead>
@@ -719,7 +716,7 @@
 const WORKER = 'https://square-lab-fa4f.missonance.workers.dev';
 const PAGE_SIZE = 20;
 const REFRESH_INTERVAL = 20 * 60 * 1000;
-const TRACK_SLOT_SECS = 600; // 10 minutes per track slot
+const TRACK_SLOT_SECS = 600; 
 
 const TRACKS = {
   "20ea0dbd62c28316ee86e20b04bb14f3acb89d036c5da16b3cb4a9b19a9232e4": { num: 1,  name: "OMPHALOSKEPSIS X" },
@@ -787,7 +784,6 @@ function getTrackByNum(num) {
   return id ? { id, ...TRACKS[id] } : null;
 }
 
-// ── LEADERBOARD STATE ──
 let cache = {};
 let currentData = [];
 let searchTerm = '';
@@ -1044,10 +1040,8 @@ document.getElementById('searchInput').addEventListener('input', e => {
 
 loadAllFromCache();
 
-
 const SERVER_COUNT = 5;
 const SERVER_POLL_MS = 30000;
-
 
 let srvData = Array.from({ length: SERVER_COUNT }, () => null);
 let srvLastRaw = [];
@@ -1062,7 +1056,7 @@ function srvTrackByNum(num) {
 async function fetchAllServers() {
   const results = await Promise.allSettled(
     Array.from({ length: SERVER_COUNT }, (_, i) =>
-      fetch(`https://dorapolytrack.xyz/server/${i}/api/invite/public`)
+      fetch(`https:
         .then(r => r.ok ? r.json() : null)
         .catch(() => null)
     )
@@ -1116,7 +1110,6 @@ function renderServerCards(servers) {
   }).join('');
 }
 
-
 const srvTimers = {};
 
 function startServerCountdown(serverIndex, timeLeft) {
@@ -1126,19 +1119,16 @@ function startServerCountdown(serverIndex, timeLeft) {
   srvTimers[serverIndex] = { secs: timeLeft, baseTimeLeft: timeLeft };
   srvTimers[serverIndex].interval = setInterval(() => {
     srvTimers[serverIndex].secs = Math.max(0, srvTimers[serverIndex].secs - 1);
-
     const firstLiveIdx = srvLastRaw.findIndex(s => s && !s.error && typeof s.timeLeft === 'number');
     if (firstLiveIdx === serverIndex) {
       const valEl = document.getElementById('centralTimerVal');
       if (valEl) valEl.textContent = formatCountdown(srvTimers[serverIndex].secs);
     }
-
     if (serverIndex === selectedScheduleServer) {
       renderScheduleCountdowns(serverIndex);
     }
   }, 1000);
 }
-
 
 function getUserTimezone() {
   try { return Intl.DateTimeFormat().resolvedOptions().timeZone; } catch(e) { return 'UTC'; }
@@ -1176,28 +1166,22 @@ function renderScheduleForServer(serverIndex) {
 
   if (!srv || srv.error || typeof srv.timeLeft !== 'number') {
     section.style.display = '';
-    body.innerHTML = `<tr><td colspan="4" class="sched-num" style="padding:1.5rem;text-align:center;color:var(--muted)">server ${serverIndex} offline or unavailable</td></tr>`;
+    body.innerHTML = `<tr><td colspan="3" class="sched-num" style="padding:1.5rem;text-align:center;color:var(--muted)">server ${serverIndex} offline or unavailable</td></tr>`;
     return;
   }
 
-  const tz = getUserTimezone();
-  tzEl.textContent = tz;
+  if (tzEl) tzEl.textContent = '';
   section.style.display = '';
 
   const timeLeft = srvTimers[serverIndex] ? srvTimers[serverIndex].secs : srv.timeLeft;
   const currentTrackNum = srv.track;
-  const now = Date.now();
 
   const rows = [];
   for (let i = 1; i <= 10; i++) {
     const trackNum = ((currentTrackNum - 1 + i) % 50) + 1;
     const track = srvTrackByNum(trackNum);
-
     const secsUntilStart = timeLeft + (i - 1) * TRACK_SLOT_SECS;
-    const startDate = new Date(now + secsUntilStart * 1000);
-    const dateLabel = formatLocalDate(startDate, tz);
-    const timeLabel = formatLocalTime(startDate, tz);
-    rows.push({ trackNum, track, secsUntilStart, dateLabel, timeLabel });
+    rows.push({ trackNum, track, secsUntilStart });
   }
 
   window._scheduleRows = rows;
@@ -1205,14 +1189,10 @@ function renderScheduleForServer(serverIndex) {
 
   body.innerHTML = rows.map((r, i) => {
     const label = r.track ? r.track.name : `track ${r.trackNum}`;
-    const secsUntil = r.secsUntilStart;
-    const countdownStr = secsUntil < 3600
-      ? formatCountdown(Math.round(secsUntil))
-      : `~${Math.floor(secsUntil / 3600)}h ${Math.floor((secsUntil % 3600) / 60)}m`;
+    const countdownStr = formatCountdown(Math.round(r.secsUntilStart));
     return `<tr>
       <td class="sched-num">${r.trackNum}</td>
       <td class="sched-name">${label}</td>
-      <td class="sched-time"><span style="color:var(--muted);font-size:0.65rem;margin-right:4px">${r.dateLabel}</span>${r.timeLabel}</td>
       <td class="sched-countdown" id="schedRow${i}">${countdownStr}</td>
     </tr>`;
   }).join('');
@@ -1227,12 +1207,9 @@ function renderScheduleCountdowns(serverIndex) {
     const el = document.getElementById(`schedRow${i}`);
     if (!el) return;
     const secsUntil = Math.max(0, r.secsUntilStart - elapsed);
-    el.textContent = secsUntil < 3600
-      ? formatCountdown(Math.round(secsUntil))
-      : `~${Math.floor(secsUntil / 3600)}h ${Math.floor((secsUntil % 3600) / 60)}m`;
+    el.textContent = formatCountdown(Math.round(secsUntil));
   });
 }
-
 
 function updateScheduleServerOptions(servers) {
   const sel = document.getElementById('scheduleServerSelect');
@@ -1248,7 +1225,6 @@ function updateScheduleServerOptions(servers) {
       opt.disabled = false;
     }
   });
-
   const curSrv = servers[selectedScheduleServer];
   if (!curSrv || curSrv.error) {
     const firstLive = servers.findIndex(s => s && !s.error);
@@ -1266,17 +1242,14 @@ async function pollServers() {
   renderServerCards(servers);
   updateScheduleServerOptions(servers);
 
-
   servers.forEach(srv => {
     if (!srv.error && typeof srv.timeLeft === 'number') {
-
       const existing = srvTimers[srv.serverIndex];
       if (!existing || Math.abs(existing.secs - srv.timeLeft) > 5) {
         startServerCountdown(srv.serverIndex, srv.timeLeft);
       }
     }
   });
-
 
   const firstLive = servers.find(s => !s.error && typeof s.timeLeft === 'number');
   const timerEl = document.getElementById('centralTimer');
