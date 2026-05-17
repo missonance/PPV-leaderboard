@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Track Leaderboard</title>
+<title>Track Leaderboard — PPV Archive</title>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -21,6 +21,7 @@
     --gold: #f5c842;
     --silver: #a0a0b0;
     --bronze: #c87a40;
+    --archive: #f5a342;
     --mono: 'IBM Plex Mono', monospace;
     --sans: 'IBM Plex Sans', sans-serif;
   }
@@ -47,6 +48,7 @@
     align-items: baseline;
     gap: 1rem;
     margin-bottom: 0.5rem;
+    flex-wrap: wrap;
   }
 
   h1 {
@@ -57,11 +59,47 @@
     color: var(--accent);
   }
 
+  .archive-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: rgba(245, 163, 66, 0.12);
+    border: 1px solid rgba(245, 163, 66, 0.4);
+    color: var(--archive);
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    padding: 3px 9px;
+    border-radius: 3px;
+    text-transform: uppercase;
+    vertical-align: middle;
+  }
+
+  .archive-badge::before {
+    content: '';
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--archive);
+  }
+
   .header-sub {
     font-size: 0.75rem;
     color: var(--muted);
     letter-spacing: 0.08em;
     text-transform: uppercase;
+  }
+
+  .archive-notice {
+    background: rgba(245, 163, 66, 0.07);
+    border: 1px solid rgba(245, 163, 66, 0.2);
+    border-radius: 5px;
+    padding: 0.6rem 1rem;
+    font-size: 0.72rem;
+    color: rgba(245, 163, 66, 0.7);
+    letter-spacing: 0.04em;
+    margin-bottom: 1.5rem;
   }
 
   .controls {
@@ -333,235 +371,6 @@
   .modal-stat-value.gold { color: var(--gold); }
   .modal-stat-value.silver { color: var(--silver); }
   .modal-stat-value.bronze { color: var(--bronze); }
-
-  /* ── SERVER STATUS + SCHEDULE ── */
-  .servers-section {
-    margin-top: 4rem;
-    border-top: 1px solid var(--border);
-    padding-top: 2.5rem;
-  }
-
-  .servers-header {
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    margin-bottom: 0.4rem;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-  }
-
-  .servers-title, .schedule-title {
-    font-size: 1.1rem;
-    font-weight: 600;
-    letter-spacing: -0.01em;
-    color: var(--accent);
-  }
-
-  .servers-sub {
-    font-size: 0.68rem;
-    color: var(--muted);
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-  }
-
-  .servers-meta-bar {
-    display: flex;
-    align-items: center;
-    gap: 1.25rem;
-    margin-bottom: 1.25rem;
-    flex-wrap: wrap;
-  }
-
-  .servers-age {
-    font-size: 0.68rem;
-    color: var(--muted);
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-
-  .central-timer {
-    font-size: 0.75rem;
-    color: var(--muted);
-    font-variant-numeric: tabular-nums;
-  }
-
-  .central-timer span {
-    color: var(--accent);
-    font-weight: 600;
-    font-size: 0.9rem;
-  }
-
-  .live-dot {
-    display: inline-block;
-    width: 6px; height: 6px;
-    border-radius: 50%;
-    background: #4caf50;
-    animation: blink 2s ease-in-out infinite;
-  }
-
-  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.4} }
-
-  .servers-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-    gap: 12px;
-  }
-
-  .server-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    overflow: hidden;
-    transition: border-color 0.15s;
-  }
-
-  .server-card:hover { border-color: var(--border2); }
-
-  .server-card-img {
-    width: 100%;
-    height: 150px;
-    object-fit: cover;
-    display: block;
-    background: var(--surface2);
-  }
-
-  .server-card-img-placeholder {
-    width: 100%;
-    height: 150px;
-    background: var(--surface2);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--muted);
-    font-size: 0.7rem;
-    letter-spacing: 0.05em;
-  }
-
-  .server-card-body { padding: 0.75rem 1rem; }
-
-  .server-card-name {
-    font-size: 0.62rem;
-    color: var(--muted);
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    margin-bottom: 3px;
-  }
-
-  .server-card-track {
-    font-size: 0.88rem;
-    font-weight: 600;
-    color: #fff;
-    margin-bottom: 2px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .server-card-next {
-    font-size: 0.7rem;
-    color: var(--muted);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .server-card-next span { color: var(--accent); }
-
-  .server-error {
-    color: var(--muted);
-    font-size: 0.8rem;
-    padding: 1.5rem 0;
-    text-align: center;
-  }
-
-  .schedule-section {
-    margin-top: 2.5rem;
-    border-top: 1px solid var(--border);
-    padding-top: 2rem;
-  }
-
-  .schedule-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 1rem;
-    flex-wrap: wrap;
-    gap: 0.75rem;
-  }
-
-  .schedule-header-left {
-    display: flex;
-    align-items: baseline;
-    gap: 1rem;
-    flex-wrap: wrap;
-  }
-
-  .schedule-tz {
-    font-size: 0.68rem;
-    color: var(--muted);
-    letter-spacing: 0.06em;
-  }
-
-  .schedule-server-select {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    color: var(--text);
-    font-family: var(--mono);
-    font-size: 0.72rem;
-    padding: 5px 28px 5px 10px;
-    border-radius: 4px;
-    outline: none;
-    cursor: pointer;
-    appearance: none;
-    -webkit-appearance: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23666670' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 9px center;
-    transition: border-color 0.15s;
-  }
-  .schedule-server-select:hover { border-color: var(--border2); }
-  .schedule-server-select:focus { border-color: var(--accent); }
-
-  .schedule-wrap {
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    overflow: hidden;
-  }
-
-  .schedule-wrap table { width: 100%; border-collapse: collapse; font-size: 0.78rem; }
-  .schedule-wrap thead { background: var(--surface2); }
-
-  .schedule-wrap th {
-    padding: 8px 14px;
-    text-align: left;
-    font-size: 0.65rem;
-    font-weight: 500;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--muted);
-    border-bottom: 1px solid var(--border);
-    border-right: 1px solid var(--border);
-  }
-
-  .schedule-wrap th:last-child { border-right: none; }
-
-  .schedule-wrap td {
-    padding: 9px 14px;
-    border-bottom: 1px solid var(--border);
-    border-right: 1px solid var(--border);
-    vertical-align: middle;
-  }
-
-  .schedule-wrap td:last-child { border-right: none; }
-  .schedule-wrap tr:last-child td { border-bottom: none; }
-  .schedule-wrap tbody tr { background: var(--surface); }
-  .schedule-wrap tbody tr:nth-child(even) { background: #182040; }
-
-  .sched-num { color: var(--muted); font-size: 0.7rem; text-align: center; width: 36px; }
-  .sched-name { color: var(--text); font-weight: 500; }
-  .sched-time { font-variant-numeric: tabular-nums; color: var(--accent); white-space: nowrap; }
-  .sched-countdown { font-variant-numeric: tabular-nums; color: var(--muted); font-size: 0.72rem; white-space: nowrap; }
 </style>
 </head>
 <body>
@@ -569,9 +378,14 @@
   <header>
     <div class="header-top">
       <h1>LEADERBOARD</h1>
+      <span class="archive-badge">final results</span>
     </div>
     <div class="header-sub">track rankings // ppv</div>
   </header>
+
+  <div class="archive-notice">
+    This is the final archived leaderboard captured at the close of the event. Results are frozen.
+  </div>
 
   <div class="controls">
     <select id="trackSelect">
@@ -630,7 +444,6 @@
   </div>
 
   <div class="status" id="statusBar"></div>
-  <div style="font-size:0.7rem;color:var(--muted);margin-bottom:0.5rem;display:flex;align-items:center;gap:0.75rem" id="refreshStatus"><button id="refreshBtn" onclick="refreshAllTracks()" style="font-size:0.65rem;font-family:var(--mono);background:var(--surface2);color:var(--muted);border:1px solid var(--border);border-radius:4px;padding:2px 8px;cursor:pointer;transition:color 0.15s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--muted)'">force refresh</button><span id="refreshAge"></span></div>
 
   <div class="table-wrap">
     <table>
@@ -643,66 +456,12 @@
         </tr>
       </thead>
       <tbody id="lbBody">
-        <tr class="msg-row"><td colspan="4"><span class="spinner"></span>loading...</td></tr>
+        <tr class="msg-row"><td colspan="4"><span class="spinner"></span>loading archive...</td></tr>
       </tbody>
     </table>
   </div>
 
   <div class="pagination" id="pagination"></div>
-
- 
-  <div class="servers-section">
-    <div class="servers-header">
-      <div class="servers-title">LIVE SERVERS</div>
-      <div class="servers-sub">dorapolytrack // ppv</div>
-    </div>
-    <div class="servers-meta-bar">
-      <div class="servers-age">
-        <span class="live-dot"></span>
-        <span id="srvAge">loading...</span>
-      </div>
-      <div class="central-timer" id="centralTimer" style="display:none">
-        next track in <span id="centralTimerVal">—</span>
-      </div>
-    </div>
-    <div class="servers-grid" id="serversGrid">
-      <div class="server-error"><span class="spinner"></span>fetching servers...</div>
-    </div>
-  </div>
-
-
-  <div class="schedule-section" id="scheduleSection" style="display:none">
-    <div class="schedule-header">
-      <div class="schedule-header-left">
-        <div class="schedule-title">UPCOMING TRACKS</div>
-        <div class="schedule-tz" id="scheduleTz"></div>
-      </div>
-      <select class="schedule-server-select" id="scheduleServerSelect">
-        <option value="0">server 0</option>
-        <option value="1">server 1</option>
-        <option value="2">server 2</option>
-        <option value="3">server 3</option>
-        <option value="4">server 4</option>
-        <option value="5">server 5</option>
-        <option value="6">server 6</option>
-        <option value="7">server 7</option>
-        <option value="8">server 8</option>
-        <option value="9">server 9</option>
-      </select>
-    </div>
-    <div class="schedule-wrap">
-      <table>
-        <thead>
-          <tr>
-            <th style="text-align:center">#</th>
-            <th>track</th>
-            <th>in</th>
-          </tr>
-        </thead>
-        <tbody id="scheduleBody"></tbody>
-      </table>
-    </div>
-  </div>
 </div>
 
 <div class="modal-overlay" id="modalOverlay">
@@ -719,10 +478,8 @@
 </div>
 
 <script>
-const WORKER = 'https://square-lab-fa4f.missonance.workers.dev';
+const ARCHIVE_URL = 'https://raw.githubusercontent.com/missonance/PPV-leaderboard/refs/heads/main/archive.json';
 const PAGE_SIZE = 20;
-const REFRESH_INTERVAL = 20 * 60 * 1000;
-const TRACK_SLOT_SECS = 900;
 
 const TRACKS = {
   "20ea0dbd62c28316ee86e20b04bb14f3acb89d036c5da16b3cb4a9b19a9232e4": { num: 1,  name: "OMPHALOSKEPSIS X" },
@@ -777,51 +534,12 @@ const TRACKS = {
   "0fcff40be442f4acedc9383c1ae927b4c6488683772061352045f17d00cc150c": { num: 50, name: "FlameWall" },
 };
 
-const NUM_TO_ID = {};
-Object.entries(TRACKS).forEach(([id, t]) => { NUM_TO_ID[t.num] = id; });
-const TRACK_IDS = Object.keys(TRACKS);
-
-const IMG_BASE = 'https://raw.githubusercontent.com/DoraChad/PPV/refs/heads/main/trackImages/';
-function trackImgUrl(trackNum) { return `${IMG_BASE}${trackNum}.png`; }
-
-function getTrackByNum(num) {
-  const wrapped = ((num - 1) % 50) + 1;
-  const id = NUM_TO_ID[wrapped];
-  return id ? { id, ...TRACKS[id] } : null;
-}
-
-// ── LEADERBOARD STATE ──
+// ── STATE ──
 let cache = {};
 let currentData = [];
 let searchTerm = '';
 let currentPage = 0;
 let totalEntries = 0;
-let refreshing = false;
-let lastRefresh = 0;
-
-function timeAgo(ts) {
-  if (!ts) return 'never';
-  const diff = Math.floor((Date.now() - ts) / 1000);
-  if (diff < 60) return `${diff}s ago`;
-  if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
-  return `${Math.floor(diff / 3600)}h ago`;
-}
-
-function startLiveAgo() {
-  function tick() {
-    const trackId = document.getElementById('trackSelect').value;
-    const track = cache[trackId];
-    const ageEl = document.getElementById('refreshAge');
-    const cacheAgeEl = document.getElementById('cacheAge');
-    if (!ageEl) return;
-    if (!track || !track.updatedAt) { ageEl.textContent = ''; return; }
-    const ago = timeAgo(track.updatedAt);
-    ageEl.textContent = `server data: ${ago}`;
-    if (cacheAgeEl) cacheAgeEl.textContent = `· updated ${ago}`;
-  }
-  tick();
-  setInterval(tick, 10000);
-}
 
 function framesToTime(ms) {
   const msec = ms % 1000;
@@ -863,41 +581,22 @@ function getContrastColor(bgRgbStr) {
   return lum > 0.22 ? '#1a1a2e' : 'var(--text)';
 }
 
-async function refreshAllTracks() {
-  if (refreshing) return;
-  refreshing = true;
-  const btn = document.getElementById('refreshBtn');
-  if (btn) { btn.disabled = true; btn.textContent = 'refreshing...'; }
-  for (let i = 0; i < TRACK_IDS.length; i++) {
-    const trackId = TRACK_IDS[i];
-    document.getElementById('refreshAge').textContent = `refreshing... ${i + 1} / ${TRACK_IDS.length}`;
-    try {
-      const res = await fetch(`${WORKER}/refresh?trackId=${trackId}`);
-      const json = await res.json();
-      if (json.entries) {
-        cache[trackId] = { ...TRACKS[trackId], updatedAt: json.updatedAt || Date.now(), entries: json.entries };
-      }
-    } catch(e) {}
-  }
-  lastRefresh = Date.now();
-  refreshing = false;
-  if (btn) { btn.disabled = false; btn.textContent = 'force refresh'; }
-  showTrack();
-}
-
-async function loadAllFromCache() {
+async function loadArchive() {
   const body = document.getElementById('lbBody');
-  body.innerHTML = '<tr class="msg-row"><td colspan="4"><span class="spinner"></span>loading...</td></tr>';
-  for (const trackId of TRACK_IDS) {
-    try {
-      const res = await fetch(`${WORKER}/data?trackId=${trackId}`);
-      if (!res.ok) continue;
-      const json = await res.json();
-      cache[trackId] = { ...TRACKS[trackId], ...json };
-    } catch(e) {}
+  try {
+    const res = await fetch(ARCHIVE_URL);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const json = await res.json();
+    // json is keyed by trackId, each value has { entries, updatedAt, ... }
+    for (const [trackId, data] of Object.entries(json)) {
+      if (TRACKS[trackId]) {
+        cache[trackId] = { ...TRACKS[trackId], ...data };
+      }
+    }
+    showTrack();
+  } catch(e) {
+    body.innerHTML = `<tr class="msg-row error"><td colspan="4">failed to load archive.json — ${e.message}</td></tr>`;
   }
-  showTrack();
-  startLiveAgo();
 }
 
 function showTrack() {
@@ -905,17 +604,19 @@ function showTrack() {
   const body = document.getElementById('lbBody');
   const status = document.getElementById('statusBar');
   const track = cache[trackId];
+
   if (!track || !track.entries || track.entries.length === 0) {
-    body.innerHTML = '<tr class="msg-row"><td colspan="4">no data yet — refresh in progress</td></tr>';
+    body.innerHTML = '<tr class="msg-row"><td colspan="4">no data for this track in the archive</td></tr>';
     status.textContent = '';
     renderPagination(0);
     return;
   }
+
   const allEntries = track.entries;
   totalEntries = allEntries.length;
   const start = currentPage * PAGE_SIZE;
   currentData = allEntries.slice(start, start + PAGE_SIZE);
-  status.innerHTML = `<span class="total-tag">${totalEntries.toLocaleString()} total finishes</span> <span style="color:var(--muted);font-size:0.7rem" id="cacheAge">· updated ${timeAgo(track.updatedAt)}</span>`;
+  status.innerHTML = `<span class="total-tag">${totalEntries.toLocaleString()} total finishes</span>`;
   render(currentData);
   renderPagination(Math.ceil(totalEntries / PAGE_SIZE));
 }
@@ -931,26 +632,23 @@ function render(data) {
   body.innerHTML = filtered.map((e, i) => {
     const globalRank = globalOffset + i + 1;
     const rankClass = globalRank === 1 ? 'rank rank-1' : globalRank === 2 ? 'rank rank-2' : globalRank === 3 ? 'rank rank-3' : 'rank';
-    let rowStyle = 'style="cursor:pointer"';
-    let rankTdStyle = 'style="text-align:center"';
     const colors = decodeCarColors(e.carStyle);
     let timeTdStyle = '';
-    let nameTdStyle = '';
+    let nameTdStyle = 'class="player-name"';
     let flagTdStyle = '';
+    let rankTdStyle = 'style="text-align:center"';
     if (colors) {
       if (globalRank === 1) {
         const nameColor = getContrastColor(colors.c1);
         nameTdStyle = `style="font-weight:500;color:${nameColor};max-width:280px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;background:linear-gradient(90deg, rgba(${colors.c1},0.55) 0%, rgba(${colors.c2},0.35) 70%, transparent 100%)"`;
         flagTdStyle = `style="background:linear-gradient(90deg, rgba(${colors.c2},0.2) 0%, transparent 100%)"`;
-        timeTdStyle = `style="color:#fff;font-variant-numeric:tabular-nums;font-weight:600;letter-spacing:0.02em"`;
-      } else {
-        timeTdStyle = `style="color:#fff;font-variant-numeric:tabular-nums;font-weight:600;letter-spacing:0.02em"`;
       }
+      timeTdStyle = `style="color:#fff;font-variant-numeric:tabular-nums;font-weight:600;letter-spacing:0.02em"`;
       rankTdStyle = `style="text-align:center;box-shadow:inset 3px 0 0 rgb(${colors.c1})"`;
     }
-    return `<tr data-idx="${i}" ${rowStyle}>
+    return `<tr data-idx="${i}" style="cursor:pointer">
       <td class="${rankClass}" ${rankTdStyle}>${globalRank}</td>
-      <td class="player-name" title="${e.nickname}" ${nameTdStyle}>${e.nickname}</td>
+      <td title="${e.nickname}" ${nameTdStyle}>${e.nickname}</td>
       <td ${flagTdStyle}><span class="flag">${countryFlag(e.countryCode)}</span></td>
       <td class="time" ${timeTdStyle}>${framesToTime(e.frames)}</td>
     </tr>`;
@@ -988,10 +686,12 @@ function openModal(entry) {
     if (match) finishes.push({ num: track.num, name: track.name, rank: match.rank, frames: match.frames });
   }
   finishes.sort((a, b) => a.num - b.num);
+
   document.getElementById('modalName').textContent = entry.nickname;
   const modal = document.querySelector('.modal');
   const colors = decodeCarColors(entry.carStyle);
   const wrap = document.getElementById('modalFinishesWrap');
+
   if (colors) {
     modal.style.background = `linear-gradient(135deg, rgb(${colors.c1}) 0%, rgb(${colors.c2}) 100%)`;
     modal.style.borderColor = `rgba(255,255,255,0.2)`;
@@ -1001,6 +701,7 @@ function openModal(entry) {
     modal.style.borderColor = '';
     if (wrap) wrap.style.borderColor = '';
   }
+
   const bestRank = finishes.length ? Math.min(...finishes.map(f => f.rank)) : '—';
   document.getElementById('modalSummary').innerHTML = `
     <div class="modal-stat">
@@ -1012,6 +713,7 @@ function openModal(entry) {
       <div class="modal-stat-value ${bestRank === 1 ? 'gold' : bestRank === 2 ? 'silver' : bestRank === 3 ? 'bronze' : ''}">#${bestRank}</div>
     </div>
   `;
+
   document.getElementById('modalFinishes').innerHTML = finishes.length
     ? finishes.map(f => {
         const rc = f.rank === 1 ? 'gold' : f.rank === 2 ? 'silver' : f.rank === 3 ? 'bronze' : '';
@@ -1024,6 +726,7 @@ function openModal(entry) {
         </tr>`;
       }).join('')
     : `<tr><td colspan="4" style="padding:1rem;text-align:center;color:rgba(255,255,255,0.5)">no finishes found</td></tr>`;
+
   document.getElementById('modalOverlay').classList.add('open');
 }
 
@@ -1045,257 +748,7 @@ document.getElementById('searchInput').addEventListener('input', e => {
   render(currentData);
 });
 
-loadAllFromCache();
-
-
-// ── SERVER COUNT: updated to 10 ──
-const SERVER_COUNT = 10;
-const SERVER_POLL_MS = 30000;
-
-
-let srvData = Array.from({ length: SERVER_COUNT }, () => null);
-let srvLastRaw = [];
-let selectedScheduleServer = 0;
-
-function srvTrackByNum(num) {
-  const wrapped = ((num - 1) % 50) + 1;
-  const id = NUM_TO_ID[wrapped];
-  return id ? { id, num: wrapped, name: TRACKS[id].name } : null;
-}
-
-async function fetchAllServers() {
-  const results = await Promise.allSettled(
-    Array.from({ length: SERVER_COUNT }, (_, i) =>
-      fetch(`https://dorapolytrack.xyz/server/${i}/api/invite/public`)
-        .then(r => r.ok ? r.json() : null)
-        .catch(() => null)
-    )
-  );
-  return results.map((r, i) => {
-    const data = r.status === 'fulfilled' ? r.value : null;
-    return data ? { serverIndex: i, ...data } : { serverIndex: i, error: true };
-  });
-}
-
-function formatCountdown(seconds) {
-  if (seconds <= 0) return '0:00';
-  const m = Math.floor(seconds / 60);
-  const s = seconds % 60;
-  return `${m}:${String(s).padStart(2, '0')}`;
-}
-
-function renderServerCards(servers) {
-  const grid = document.getElementById('serversGrid');
-  if (!servers || servers.every(s => s.error)) {
-    grid.innerHTML = '<div class="server-error">Could not reach server API.</div>';
-    return;
-  }
-  grid.innerHTML = servers.map(srv => {
-    if (srv.error) {
-      return `<div class="server-card">
-        <div class="server-card-img-placeholder">server ${srv.serverIndex} offline</div>
-        <div class="server-card-body">
-          <div class="server-card-name">server ${srv.serverIndex}</div>
-          <div class="server-card-track" style="color:var(--muted)">offline</div>
-        </div>
-      </div>`;
-    }
-    const currentNum = srv.track;
-    const currentTrack = srvTrackByNum(currentNum);
-    const nextTrack = srvTrackByNum(currentNum + 1);
-    const imgUrl = currentTrack ? trackImgUrl(currentTrack.num) : null;
-    const currentLabel = currentTrack ? `${currentTrack.num} — ${currentTrack.name}` : `track ${currentNum}`;
-    const nextLabel = nextTrack ? `${nextTrack.num} — ${nextTrack.name}` : '—';
-    const imgHtml = imgUrl
-      ? `<img class="server-card-img" src="${imgUrl}" alt="${currentLabel}" onerror="this.outerHTML='<div class=\\'server-card-img-placeholder\\'>no image</div>'">`
-      : `<div class="server-card-img-placeholder">no image</div>`;
-    return `<div class="server-card">
-      ${imgHtml}
-      <div class="server-card-body">
-        <div class="server-card-name">server ${srv.serverIndex}</div>
-        <div class="server-card-track">${currentLabel}</div>
-        <div class="server-card-next">next: <span>${nextLabel}</span></div>
-      </div>
-    </div>`;
-  }).join('');
-}
-
-
-const srvTimers = {};
-
-function startServerCountdown(serverIndex, timeLeft) {
-  if (srvTimers[serverIndex]) {
-    clearInterval(srvTimers[serverIndex].interval);
-  }
-  srvTimers[serverIndex] = { secs: timeLeft, baseTimeLeft: timeLeft };
-  srvTimers[serverIndex].interval = setInterval(() => {
-    srvTimers[serverIndex].secs = Math.max(0, srvTimers[serverIndex].secs - 1);
-  
-    const firstLiveIdx = srvLastRaw.findIndex(s => s && !s.error && typeof s.timeLeft === 'number');
-    if (firstLiveIdx === serverIndex) {
-      const valEl = document.getElementById('centralTimerVal');
-      if (valEl) valEl.textContent = formatCountdown(srvTimers[serverIndex].secs);
-    }
-    
-    if (serverIndex === selectedScheduleServer) {
-      renderScheduleCountdowns(serverIndex);
-    }
-  }, 1000);
-}
-
-
-function getUserTimezone() {
-  try { return Intl.DateTimeFormat().resolvedOptions().timeZone; } catch(e) { return 'UTC'; }
-}
-
-function formatLocalTime(date, tz) {
-  try {
-    return date.toLocaleTimeString('en-US', {
-      timeZone: tz,
-      hour: '2-digit',
-      minute: '2-digit',
-      hour12: true
-    });
-  } catch(e) { return date.toLocaleTimeString(); }
-}
-
-function formatLocalDate(date, tz) {
-  const now = new Date();
-  const todayStr = now.toLocaleDateString('en-CA', { timeZone: tz });
-  const dateStr = date.toLocaleDateString('en-CA', { timeZone: tz });
-  if (dateStr === todayStr) return 'today';
-  const tomorrow = new Date(now);
-  tomorrow.setDate(tomorrow.getDate() + 1);
-  const tomorrowStr = tomorrow.toLocaleDateString('en-CA', { timeZone: tz });
-  if (dateStr === tomorrowStr) return 'tomorrow';
-  return date.toLocaleDateString('en-US', { timeZone: tz, weekday: 'short', month: 'short', day: 'numeric' });
-}
-
-function renderScheduleForServer(serverIndex) {
-  const srv = srvLastRaw[serverIndex];
-  const section = document.getElementById('scheduleSection');
-  const body = document.getElementById('scheduleBody');
-  const tzEl = document.getElementById('scheduleTz');
-  if (!section || !body) return;
-
-  if (!srv || srv.error || typeof srv.timeLeft !== 'number') {
-    section.style.display = '';
-    body.innerHTML = `<tr><td colspan="3" class="sched-num" style="padding:1.5rem;text-align:center;color:var(--muted)">server ${serverIndex} offline or unavailable</td></tr>`;
-    return;
-  }
-
-  if (tzEl) tzEl.textContent = '';
-  section.style.display = '';
-
-  const timeLeft = srvTimers[serverIndex] ? srvTimers[serverIndex].secs : srv.timeLeft;
-  const currentTrackNum = srv.track;
-
-  const rows = [];
-  for (let i = 1; i <= 10; i++) {
-    const trackNum = ((currentTrackNum - 1 + i) % 50) + 1;
-    const track = srvTrackByNum(trackNum);
-
-    const secsUntilStart = timeLeft + (i - 1) * TRACK_SLOT_SECS;
-    rows.push({ trackNum, track, secsUntilStart });
-  }
-
-  window._scheduleRows = rows;
-  window._scheduleServerIndex = serverIndex;
-
-  body.innerHTML = rows.map((r, i) => {
-    const label = r.track ? r.track.name : `track ${r.trackNum}`;
-    const countdownStr = formatCountdown(Math.round(r.secsUntilStart));
-    return `<tr>
-      <td class="sched-num">${r.trackNum}</td>
-      <td class="sched-name">${label}</td>
-      <td class="sched-countdown" id="schedRow${i}">${countdownStr}</td>
-    </tr>`;
-  }).join('');
-}
-
-function renderScheduleCountdowns(serverIndex) {
-  if (!window._scheduleRows || window._scheduleServerIndex !== serverIndex) return;
-  const timer = srvTimers[serverIndex];
-  if (!timer) return;
-  const elapsed = timer.baseTimeLeft - timer.secs;
-  window._scheduleRows.forEach((r, i) => {
-    const el = document.getElementById(`schedRow${i}`);
-    if (!el) return;
-    const secsUntil = Math.max(0, r.secsUntilStart - elapsed);
-    el.textContent = formatCountdown(Math.round(secsUntil));
-  });
-}
-
-
-function updateScheduleServerOptions(servers) {
-  const sel = document.getElementById('scheduleServerSelect');
-  if (!sel) return;
-  Array.from(sel.options).forEach((opt, i) => {
-    const srv = servers[i];
-    if (!srv || srv.error) {
-      opt.textContent = `server ${i} (offline)`;
-      opt.disabled = true;
-    } else {
-      const t = srvTrackByNum(srv.track);
-      opt.textContent = `server ${i} — track ${srv.track}${t ? ': ' + t.name : ''}`;
-      opt.disabled = false;
-    }
-  });
-
-  const curSrv = servers[selectedScheduleServer];
-  if (!curSrv || curSrv.error) {
-    const firstLive = servers.findIndex(s => s && !s.error);
-    if (firstLive !== -1) {
-      selectedScheduleServer = firstLive;
-      sel.value = String(firstLive);
-    }
-  }
-}
-
-async function pollServers() {
-  const servers = await fetchAllServers();
-  srvLastRaw = servers;
-
-  renderServerCards(servers);
-  updateScheduleServerOptions(servers);
-
-
-  servers.forEach(srv => {
-    if (!srv.error && typeof srv.timeLeft === 'number') {
-
-      const existing = srvTimers[srv.serverIndex];
-      if (!existing || Math.abs(existing.secs - srv.timeLeft) > 5) {
-        startServerCountdown(srv.serverIndex, srv.timeLeft);
-      }
-    }
-  });
-
-
-  const firstLive = servers.find(s => !s.error && typeof s.timeLeft === 'number');
-  const timerEl = document.getElementById('centralTimer');
-  if (firstLive && timerEl) {
-    timerEl.style.display = '';
-    const valEl = document.getElementById('centralTimerVal');
-    if (valEl && srvTimers[firstLive.serverIndex]) {
-      valEl.textContent = formatCountdown(srvTimers[firstLive.serverIndex].secs);
-    }
-  }
-
-
-  renderScheduleForServer(selectedScheduleServer);
-
-  const ageEl = document.getElementById('srvAge');
-  if (ageEl) ageEl.textContent = `updated just now · refreshes every 30s`;
-}
-
-
-document.getElementById('scheduleServerSelect').addEventListener('change', function() {
-  selectedScheduleServer = parseInt(this.value);
-  renderScheduleForServer(selectedScheduleServer);
-});
-
-pollServers();
-setInterval(pollServers, SERVER_POLL_MS);
+loadArchive();
 </script>
 </body>
 </html>
